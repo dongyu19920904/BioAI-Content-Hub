@@ -1,0 +1,67 @@
+---
+/**
+ * 项目导航页面
+ * ============
+ * 这个页面展示你所有的项目卡片
+ * 项目数据来自 src/data/navProjects.ts 的 PROJECTS 数组
+ * 要添加新项目，只需编辑那个文件即可
+ */
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { PROJECTS } from "@/data/navProjects";
+---
+
+<Layout>
+  <Header />
+  <main id="main-content" class="app-layout">
+    <section class="pt-8 pb-6 border-b border-border">
+      <h1 class="text-3xl font-bold sm:text-4xl">相关入口</h1>
+      <p class="mt-4 text-base-content/70">
+        这里放内容库、原始日报、个人主页和变现承接入口，方便从一个地方进入整条链路。
+      </p>
+    </section>
+
+    <section class="pt-8 pb-6">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {PROJECTS.map(project => (
+          <a
+            href={project.url}
+            class="group flex flex-col gap-2 rounded-xl border border-border bg-base-100 p-5 transition-all hover:border-accent hover:shadow-lg"
+            target={project.url.startsWith("http") ? "_blank" : "_self"}
+            rel={
+              project.url.startsWith("http")
+                ? "noopener noreferrer"
+                : undefined
+            }
+          >
+            <div class="flex items-center gap-3">
+              <span class="text-3xl">{project.icon || "📦"}</span>
+              <span class="text-lg font-semibold group-hover:text-accent">
+                {project.title}
+              </span>
+            </div>
+            <p class="text-sm text-base-content/70 flex-1">
+              {project.desc}
+            </p>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="inline-block rounded-full bg-accent/10 px-2 py-0.5 text-xs text-accent">
+                {project.tag}
+              </span>
+              <span class="text-xs text-base-content/50 group-hover:text-accent">
+                {project.url.startsWith("http") ? "外部链接 ↗" : "站内 →"}
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="py-8 text-center">
+      <p class="text-base-content/60">
+        这个列表会随着 AI 延续学项目库逐步扩展。
+      </p>
+    </section>
+  </main>
+  <Footer />
+</Layout>

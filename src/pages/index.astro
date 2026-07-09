@@ -1,0 +1,187 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Socials from "@/components/Socials.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import Card from "@/components/Card.astro";
+import getSortedPosts from "@/utils/getSortedPosts";
+import IconRss from "@/assets/icons/IconRss.svg";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import { SITE } from "@/config";
+import { SOCIALS } from "@/constants";
+import { NAV_LINKS } from "@/data/navProjects";
+
+const posts = await getCollection("blog");
+
+const sortedPosts = getSortedPosts(posts);
+const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
+const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+---
+
+<Layout>
+  <Header />
+  <main id="main-content" data-layout="index" class="app-layout">
+    {/* ===== Launchpad 首屏：内容库入口矩阵 ===== */}
+    <section id="launchpad" class="launchpad">
+      <div class="launchpad-shell">
+        <div class="launchpad-heading launchpad-panel">
+          <span class="launchpad-eyebrow">AI LONGEVITY CONTENT HUB</span>
+          <div class="launchpad-title-row">
+            <h1 class="launchpad-name">AI 延续学内容库</h1>
+            <a
+              target="_blank"
+              href="/rss.xml"
+              class="launchpad-rss"
+              aria-label="rss feed"
+              title="RSS Feed"
+            >
+              <IconRss
+                width={20}
+                height={20}
+                class="scale-125 stroke-accent stroke-3 rtl:-rotate-90"
+              />
+              <span class="sr-only">RSS Feed</span>
+            </a>
+          </div>
+          <p class="launchpad-tagline">
+            从商机日报到文章、资料包和轻产品
+          </p>
+          <p class="launchpad-sub">
+            每天从 AI 延续学日报里筛一个可落地灵感，写成真正能帮人的内容，再沉淀成可售卖资料包。
+          </p>
+          <div class="launchpad-chips">
+            <span class="launchpad-chip">Signal · 商机筛选</span>
+            <span class="launchpad-chip">Content · 文章生产</span>
+            <span class="launchpad-chip">Pack · 资料包交付</span>
+          </div>
+        </div>
+        <div class="launchpad-grid launchpad-panel grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {
+            NAV_LINKS.map((link, index) => (
+              <a
+                href={link.url}
+                class="project-card"
+                style={`--delay: ${index * 90}ms`}
+                target={link.url.startsWith("http") ? "_blank" : "_self"}
+                rel={
+                  link.url.startsWith("http") ? "noopener noreferrer" : undefined
+                }
+              >
+                <div class="flex items-center gap-3">
+                  <span class="project-icon">{link.icon}</span>
+                  <span class="project-title">{link.title}</span>
+                </div>
+                <p class="project-desc">{link.desc}</p>
+                <div class="project-footer">
+                  <span class="project-tag">{link.tag}</span>
+                  <span class="project-arrow">↗</span>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {/* ===== 站点说明：移至下方，结构化呈现 ===== */}
+    <section id="about" class="pt-10 pb-8 border-b border-border">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <h2 class="text-2xl font-semibold tracking-wide">这个站点做什么</h2>
+        <span class="text-xs uppercase tracking-[0.3em] text-base-content/50">
+          Operator Notes
+        </span>
+      </div>
+      <div class="mt-6 grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+        <div class="space-y-3 text-base-content/80">
+          <p class="text-lg text-foreground">
+            这里不是普通资讯站，而是 AI 延续学内容和资料包的实验仓库。
+          </p>
+          <p>
+            核心流程是：<strong>日报信号 -> 商机判断 -> 文章 -> 资料包 -> 变现测试</strong>。
+            每篇内容都要回答一个问题：读者今天能用它做什么。
+          </p>
+          <p>
+            适合沉淀检测指标解释、可穿戴数据模板、论文项目复盘、家人沟通话术、工具导航和小产品说明书。
+          </p>
+          {
+            // only display if at least one social link is enabled
+            SOCIALS.length > 0 && (
+              <div class="mt-4 flex max-sm:flex-col sm:items-center">
+                <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
+                  找我聊聊
+                </div>
+                <Socials />
+              </div>
+            )
+          }
+        </div>
+        <div class="about-panel">
+          <div class="about-row">
+            <span class="about-label">正在做</span>
+            <span class="about-value">文章库 / 资料包 / 轻工具</span>
+          </div>
+          <div class="about-row">
+            <span class="about-label">航向</span>
+            <span class="about-value">AI 延续学内容产品化</span>
+          </div>
+          <div class="about-row">
+            <span class="about-label">目标</span>
+            <span class="about-value">每天从商机里做出一个可验证交付</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    {
+      featuredPosts.length > 0 && (
+        <section
+          id="featured"
+          class:list={[
+            "pt-12 pb-6",
+            { "border-b border-border": recentPosts.length > 0 },
+          ]}
+        >
+          <h2 class="text-2xl font-semibold tracking-wide">⭐ 精选文章</h2>
+          <ul>
+            {featuredPosts.map(data => (
+              <Card variant="h3" {...data} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      recentPosts.length > 0 && (
+        <section id="recent-posts" class="pt-12 pb-6">
+          <h2 class="text-2xl font-semibold tracking-wide">📝 最新文章</h2>
+          <ul>
+            {recentPosts.map(
+              (data, index) =>
+                index < SITE.postPerIndex && <Card variant="h3" {...data} />
+            )}
+          </ul>
+        </section>
+      )
+    }
+
+    <div class="my-8 text-center">
+      <LinkButton href="/posts/">
+        查看全部文章
+        <IconArrowRight class="inline-block rtl:-rotate-180" />
+      </LinkButton>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const indexLayout = (document.querySelector("#main-content") as HTMLElement)
+      ?.dataset?.layout;
+    if (indexLayout) {
+      sessionStorage.setItem("backUrl", "/");
+    }
+  });
+</script>
