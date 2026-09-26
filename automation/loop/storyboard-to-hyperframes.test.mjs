@@ -15,9 +15,9 @@ test("accepts a real project pilot without mislabelling it as a daily opportunit
   assert.match(html, /project_0123456789abcdef/);
 });
 
-test("hides an old scene when the next timed scene begins", () => {
+test("animates child content without fighting renderer-managed clip visibility", () => {
   const html = compositionFromStoryboard({ opportunity_id: "project_0123456789abcdef", scenes: [{ seconds: 4, text: "第一页" }, { seconds: 4, text: "第二页" }] });
-  assert.match(html, /\.scene\{opacity:0;visibility:hidden\}/);
-  assert.match(html, /tl\.set\("#scene-1",\{autoAlpha:0\},4\)/);
-  assert.match(html, /tl\.set\("#scene-2",\{autoAlpha:1,y:28\},4\)/);
+  assert.match(html, /id="content-2"/);
+  assert.match(html, /tl\.fromTo\("#content-2"/);
+  assert.doesNotMatch(html, /autoAlpha/);
 });
