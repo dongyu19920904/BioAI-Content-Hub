@@ -45,10 +45,11 @@ jobs:
           node automation/loop/storyboard-to-hyperframes.mjs automation/runs/pyaging-public-video/storyboard.json
       - name: Render with pinned HyperFrames and mux voice and captions
         run: |
+          mv automation/runs/pyaging-public-video/narration.wav automation/runs/pyaging-public-demo/narration.wav
           npx --yes hyperframes@0.8.78 lint automation/runs/pyaging-public-video
           npx --yes hyperframes@0.8.78 check automation/runs/pyaging-public-video
           npx --yes hyperframes@0.8.78 render automation/runs/pyaging-public-video --quality draft --fps 12 --output automation/runs/pyaging-public-video/visual.mp4
-          ffmpeg -hide_banner -loglevel error -y -i automation/runs/pyaging-public-video/visual.mp4 -i automation/runs/pyaging-public-video/narration.wav -vf "subtitles=automation/runs/pyaging-public-video/subtitles.srt:force_style='FontName=Noto Sans CJK SC,FontSize=24'" -map 0:v:0 -map 1:a:0 -c:v libx264 -pix_fmt yuv420p -c:a aac -b:a 128k -shortest automation/runs/pyaging-public-video/unpublished-demo.mp4
+          ffmpeg -hide_banner -loglevel error -y -i automation/runs/pyaging-public-video/visual.mp4 -i automation/runs/pyaging-public-demo/narration.wav -vf "subtitles=automation/runs/pyaging-public-video/subtitles.srt:force_style='FontName=Noto Sans CJK SC,FontSize=24'" -map 0:v:0 -map 1:a:0 -c:v libx264 -pix_fmt yuv420p -c:a aac -b:a 128k -shortest automation/runs/pyaging-public-video/unpublished-demo.mp4
       - name: Check real media streams and safe manifest
         run: |
           python - <<'PY'

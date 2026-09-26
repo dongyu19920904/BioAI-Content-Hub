@@ -14,3 +14,10 @@ test("accepts a real project pilot without mislabelling it as a daily opportunit
   const html = compositionFromStoryboard({ opportunity_id: "project_0123456789abcdef", scenes: [{ seconds: 4, text: "公开样本试跑" }] });
   assert.match(html, /project_0123456789abcdef/);
 });
+
+test("hides an old scene when the next timed scene begins", () => {
+  const html = compositionFromStoryboard({ opportunity_id: "project_0123456789abcdef", scenes: [{ seconds: 4, text: "第一页" }, { seconds: 4, text: "第二页" }] });
+  assert.match(html, /\.scene\{opacity:0;visibility:hidden\}/);
+  assert.match(html, /tl\.set\("#scene-1",\{autoAlpha:0\},4\)/);
+  assert.match(html, /tl\.set\("#scene-2",\{autoAlpha:1,y:28\},4\)/);
+});

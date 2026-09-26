@@ -18,7 +18,7 @@ export function compositionFromStoryboard(storyboard, maxSeconds = 90) {
     const duration = Math.min(Number(scene.seconds), maxSeconds - start);
     if (!Number.isFinite(duration) || duration <= 0 || duration > 90) continue;
     const text = escapeHtml(String(scene.text || "").replace(/\s+/g, " ").slice(0, 160));
-    scenes.push(`<section id="scene-${scenes.length + 1}" class="clip scene" data-start="${start}" data-duration="${duration}" data-record-id="${escapeHtml(storyboard.opportunity_id)}">${text}</section>`);
+    scenes.push({ start, duration, html: `<section id="scene-${scenes.length + 1}" class="clip scene" data-start="${start}" data-duration="${duration}" data-record-id="${escapeHtml(storyboard.opportunity_id)}">${text}</section>` });
     start += duration;
     if (start >= maxSeconds) break;
   }
@@ -26,10 +26,10 @@ export function compositionFromStoryboard(storyboard, maxSeconds = 90) {
   return `<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=1280, height=720"><title>AI 生命延续学视频预览</title>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-<style>*{box-sizing:border-box}html,body{margin:0;width:1280px;height:720px;background:#071a24;color:#fff;font-family:sans-serif}#root{position:relative;width:1280px;height:720px;overflow:hidden;background:radial-gradient(circle at 80% 20%,#1b5661,#071a24 55%)}.clip{position:absolute;inset:0;display:flex;align-items:center;padding:90px;font-size:64px;line-height:1.22}.scene::before{content:"AI 生命延续学 · 证据优先";position:absolute;top:95px;color:#79e0ce;font-size:30px;letter-spacing:.08em}.scene::after{content:attr(data-record-id) " · 自动生成预览，非医学建议";position:absolute;bottom:54px;font-size:22px;color:#bad1d4}.scene:nth-of-type(even){background:linear-gradient(135deg,#103b47,#071a24)}</style></head><body>
+<style>*{box-sizing:border-box}html,body{margin:0;width:1280px;height:720px;background:#071a24;color:#fff;font-family:sans-serif}#root{position:relative;width:1280px;height:720px;overflow:hidden;background:radial-gradient(circle at 80% 20%,#1b5661,#071a24 55%)}.clip{position:absolute;inset:0;display:flex;align-items:center;padding:90px;font-size:64px;line-height:1.22}.scene{opacity:0;visibility:hidden}.scene::before{content:"AI 生命延续学 · 证据优先";position:absolute;top:95px;color:#79e0ce;font-size:30px;letter-spacing:.08em}.scene::after{content:attr(data-record-id) " · 自动生成预览，非医学建议";position:absolute;bottom:54px;font-size:22px;color:#bad1d4}.scene:nth-of-type(even){background:linear-gradient(135deg,#103b47,#071a24)}</style></head><body>
 <div id="root" data-composition-id="main" data-start="0" data-width="1280" data-height="720" data-fps="24" data-duration="${start}">
-${scenes.join("\n")}
-</div><script>window.__timelines=window.__timelines||{};const tl=gsap.timeline({paused:true});${scenes.map((_, index) => `tl.from("#scene-${index + 1}",{y:28,opacity:0,duration:.45,ease:"power2.out"},${scenes.slice(0, index).reduce((sum, part) => sum + Number(part.match(/data-duration="([^"]+)/)?.[1] || 0), 0) + 0.15});`).join("")}window.__timelines.main=tl;</script></body></html>\n`;
+${scenes.map((scene) => scene.html).join("\n")}
+</div><script>window.__timelines=window.__timelines||{};const tl=gsap.timeline({paused:true});${scenes.map((scene, index) => `${index ? `tl.set("#scene-${index}",{autoAlpha:0},${scene.start});` : ""}tl.set("#scene-${index + 1}",{autoAlpha:1,y:28},${scene.start});tl.to("#scene-${index + 1}",{y:0,duration:.45,ease:"power2.out"},${scene.start + 0.05});`).join("")}window.__timelines.main=tl;</script></body></html>\n`;
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
