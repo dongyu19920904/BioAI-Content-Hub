@@ -18,6 +18,13 @@ test("unverified evidence creates consistent drafts but blocks publication", () 
     assert.match(text, /https:\/\/doi.org\/10.1002\/alz.71772/);
     assert.doesNotMatch(text, /已证实延寿|治疗有效/);
   }
+  for (const [channel, draft] of Object.entries({ website: result.files.website, wechat: result.files.wechat, bilibili: result.files.bilibili })) {
+    const url = new URL(result.attribution_urls[channel]);
+    assert.equal(url.searchParams.get("utm_source"), channel);
+    assert.equal(url.searchParams.get("utm_campaign"), input.opportunity_id);
+    assert.match(draft, new RegExp(`utm_source=${channel}`));
+    assert.match(draft, /issues\/new\?template=opportunity-feedback.md/);
+  }
 });
 
 test("verified claims may enter channel authorization, not pretend to be published", () => {

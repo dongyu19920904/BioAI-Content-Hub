@@ -22,6 +22,21 @@ function releaseGate(record) {
   return { status: reasons.length ? "blocked_from_publication" : "ready_for_channel_authorization", reasons };
 }
 
+function attributionUrl(sourcePage, id, channel) {
+  const url = new URL(sourcePage);
+  url.searchParams.set("utm_source", channel);
+  url.searchParams.set("utm_medium", "organic");
+  url.searchParams.set("utm_campaign", id);
+  return url.toString();
+}
+
+function feedbackUrl(id) {
+  const url = new URL("https://github.com/dongyu19920904/BioAI-Daily-Web/issues/new");
+  url.searchParams.set("template", "opportunity-feedback.md");
+  url.searchParams.set("title", `[机会反馈] ${id}`);
+  return url.toString();
+}
+
 /** Produce cautious channel drafts from the same opportunity record; never invent a claim. */
 export function buildEvidencePack(record, sourcePage) {
   if (!/^opp_[a-f0-9]{16}$/.test(record?.opportunity_id || "")) throw new Error("Invalid opportunity_id");
@@ -39,10 +54,16 @@ export function buildEvidencePack(record, sourcePage) {
     : "以下事实已按来源逐条核对；不构成个人医疗建议。";
   const references = links.map((url, index) => `${index + 1}. ${url}`).join("\n");
   const facts = claims.length ? claims.map((claim) => `- ${claim}`).join("\n") : "- 目前只有候选来源；需要核对研究对象、方法、结论与局限。";
-  const common = `${lead}\n\n机会编号：${id}\n选题：${title}\n原始记录：${sourcePage}\n\n可陈述事实：\n${facts}\n\n来源：\n${references || "暂无可核查来源"}\n`;
-  const website = `# ${title}\n\n${common}\n## 接下来核查什么\n\n核对一手材料与公开数据；若是健康相关研究，区分相关性、机制、动物研究与人体临床证据。\n`;
-  const wechat = `# ${title}：先看证据，再谈应用\n\n${common}\n读者可从上面的原始记录和来源自行追溯。初步发现不能写成确定的延寿效果。\n`;
-  const bilibili = `标题：${title}，证据到了哪一步？\n\n00:00 为什么关注这个问题\n00:20 目前能确定什么：${claims.length ? claims.join("；") : "只有待核查线索，不能声称有效"}\n00:50 哪些地方还不知道\n01:10 如何查看原始来源与项目进展\n\n${common}`;
+  const attribution = {
+    website: attributionUrl(sourcePage, id, "website"),
+    wechat: attributionUrl(sourcePage, id, "wechat"),
+    bilibili: attributionUrl(sourcePage, id, "bilibili"),
+  };
+  const feedback = feedbackUrl(id);
+  const common = (channel) => `${lead}\n\n机会编号：${id}\n选题：${title}\n原始记录：${attribution[channel]}\n公开纠错与使用反馈：${feedback}\n\n可陈述事实：\n${facts}\n\n来源：\n${references || "暂无可核查来源"}\n`;
+  const website = `# ${title}\n\n${common("website")}\n## 接下来核查什么\n\n核对一手材料与公开数据；若是健康相关研究，区分相关性、机制、动物研究与人体临床证据。\n`;
+  const wechat = `# ${title}：先看证据，再谈应用\n\n${common("wechat")}\n读者可从上面的原始记录和来源自行追溯。初步发现不能写成确定的延寿效果。\n`;
+  const bilibili = `标题：${title}，证据到了哪一步？\n\n00:00 为什么关注这个问题\n00:20 目前能确定什么：${claims.length ? claims.join("；") : "只有待核查线索，不能声称有效"}\n00:50 哪些地方还不知道\n01:10 如何查看原始来源与项目进展\n\n${common("bilibili")}`;
   const storyboard = {
     format: "16:9", duration_target_seconds: 90, opportunity_id: id,
     render_status: "not_rendered", voice_status: "not_generated",
@@ -50,8 +71,8 @@ export function buildEvidencePack(record, sourcePage) {
       { seconds: 20, text: `为什么关注：${title}` },
       { seconds: 30, text: claims.length ? `已核查：${claims[0]}` : "证据核验中，暂不传播研究结论" },
       { seconds: 25, text: "相关性、机制与临床效果不是一回事" },
-      { seconds: 15, text: `查看原始记录：${sourcePage}` },
+      { seconds: 15, text: `查看原始记录：${attribution.bilibili}` },
     ],
   };
-  return { opportunity_id: id, gate, files: { website, wechat, bilibili, storyboard } };
+  return { opportunity_id: id, gate, attribution_urls: attribution, feedback_url: feedback, files: { website, wechat, bilibili, storyboard } };
 }
