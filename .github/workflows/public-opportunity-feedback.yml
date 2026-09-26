@@ -19,7 +19,7 @@ jobs:
           node-version: "24"
       - name: Test aggregation and privacy boundaries
         run: node --test automation/loop/collect-public-feedback.test.mjs
-      - name: Read public issue titles only into an aggregate report
+      - name: Read public issue titles and project release counts into an aggregate report
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node automation/loop/collect-public-feedback.mjs
