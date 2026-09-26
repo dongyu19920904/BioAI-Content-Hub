@@ -1,0 +1,57 @@
+name: Daily evidence-first draft packs
+
+on:
+  schedule:
+    - cron: "17 14 * * *" # 22:17 Asia/Shanghai; delayed schedules are acceptable
+  workflow_dispatch:
+    inputs:
+      report_date:
+        description: "日报日期 YYYY-MM-DD（留空为北京时间今天）"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  draft-packs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Fetch public structured reports and build cautious drafts
+        shell: bash
+        env:
+          REQUESTED_DATE: ${{ inputs.report_date }}
+        run: |
+          set -euo pipefail
+          report_date="${REQUESTED_DATE:-$(TZ=Asia/Shanghai date +%F)}"
+          if [[ ! "$report_date" =~ ^20[0-9]{2}-[0-9]{2}-[0-9]{2}$ ]]; then
+            echo "Invalid report_date" >&2
+            exit 1
+          fi
+          mkdir -p automation/runs/inputs
+          found=0
+          for section in opportunity project-opportunity; do
+            source="https://raw.githubusercontent.com/dongyu19920904/BioAI-Daily-Web/main/static/data/opportunities/${section}/${report_date}.json"
+            input="automation/runs/inputs/${section}-${report_date}.json"
+            if curl --fail --silent --show-error --location --max-time 15 "$source" --output "$input"; then
+              node automation/loop/build-evidence-packs.mjs --input "$input" --output-dir "automation/runs/${section}"
+              found=$((found + 1))
+            else
+              echo "${section} ${report_date}: structured report unavailable; no draft invented"
+            fi
+          done
+          echo "Found ${found} structured report(s)"
+          if [[ "$found" -eq 0 ]]; then
+            echo "No public records yet; inspect upstream daily job or retry manually." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Archive drafts as private workflow artifact, not as published media
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-drafts-${{ github.run_id }}
+          path: automation/runs/
+          retention-days: 7
+          if-no-files-found: ignore

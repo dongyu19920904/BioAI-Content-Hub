@@ -1,0 +1,31 @@
+name: Evidence-first content pack
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "automation/loop/**"
+      - ".github/workflows/evidence-pack-ci.yml"
+  pull_request:
+    paths:
+      - "automation/loop/**"
+      - ".github/workflows/evidence-pack-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pack-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: node --test automation/loop/evidence-pack.test.mjs
+      - run: node automation/loop/build-evidence-packs.mjs --input automation/loop/fixtures/opportunity-synthetic.json
+      - name: Verify synthetic pack is blocked from publication
+        run: |
+          node -e "const m=require('./automation/runs/2026-09-26/opp_0123456789abcdef/manifest.json'); if(m.gate.status!=='blocked_from_publication'||m.channel_status.website!=='not_published') process.exit(1)"

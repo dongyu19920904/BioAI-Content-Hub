@@ -1,0 +1,39 @@
+name: Video renderer smoke test
+
+on:
+  pull_request:
+    paths:
+      - "automation/loop/storyboard-to-hyperframes.mjs"
+      - "automation/loop/fixtures/opportunity-synthetic.json"
+      - ".github/workflows/video-render-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render-synthetic-preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install video runtime and Chinese font
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
+      - name: Make a synthetic, unpublished six-second composition
+        run: |
+          node automation/loop/build-evidence-packs.mjs --input automation/loop/fixtures/opportunity-synthetic.json
+          node automation/loop/storyboard-to-hyperframes.mjs automation/runs/2026-09-26/opp_0123456789abcdef/storyboard.json 6
+      - name: Lint, inspect and render with pinned open-source HyperFrames
+        run: |
+          npx --yes hyperframes@0.8.78 lint automation/runs/2026-09-26/opp_0123456789abcdef
+          npx --yes hyperframes@0.8.78 check automation/runs/2026-09-26/opp_0123456789abcdef
+          npx --yes hyperframes@0.8.78 render automation/runs/2026-09-26/opp_0123456789abcdef --quality draft --fps 12 --output automation/runs/2026-09-26/opp_0123456789abcdef/preview.mp4
+          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1 automation/runs/2026-09-26/opp_0123456789abcdef/preview.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-unpublished-video-preview
+          path: automation/runs/2026-09-26/opp_0123456789abcdef/preview.mp4
+          retention-days: 3

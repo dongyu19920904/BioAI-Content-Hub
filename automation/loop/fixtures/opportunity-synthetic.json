@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "report_date": "2026-09-26",
+  "report_section": "opportunity",
+  "source_page": "/opportunity/2026-09/2026-09-26/",
+  "fixture_only": true,
+  "opportunities": [
+    {
+      "opportunity_id": "opp_0123456789abcdef",
+      "title": "合成测试：AI 与健康研究选题",
+      "source_urls": ["https://doi.org/10.1000/test"],
+      "source_verified": false,
+      "demand_verified": false,
+      "risk_flags": ["health_claim_review"]
+    }
+  ]
+}
