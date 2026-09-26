@@ -34,4 +34,4 @@ const svg = `
 
 await mkdir(path.dirname(output), { recursive: true });
 await writeFile(output, await sharp(Buffer.from(svg)).png().toBuffer());
-console.log(`Created ${output}`);
+process.stdout.write(`Created ${output}\n`);

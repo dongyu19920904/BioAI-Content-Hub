@@ -39,4 +39,4 @@ for (const pack of packs) {
     writeFile(path.join(directory, "manifest.json"), `${JSON.stringify({ opportunity_id: pack.opportunity_id, gate: pack.gate, source_page: sourcePage, channel_status: { website: "not_published", wechat: "not_published", bilibili: "not_published" } }, null, 2)}\n`, "utf8"),
   ]);
 }
-console.log(JSON.stringify({ report_date: document.report_date, pack_count: packs.length, publishable_count: packs.filter((item) => item.gate.status === "ready_for_channel_authorization").length, output_dir: outputDir }));
+process.stdout.write(`${JSON.stringify({ report_date: document.report_date, pack_count: packs.length, publishable_count: packs.filter((item) => item.gate.status === "ready_for_channel_authorization").length, output_dir: outputDir })}\n`);

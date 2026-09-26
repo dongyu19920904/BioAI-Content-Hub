@@ -39,5 +39,5 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const storyboard = JSON.parse(await readFile(path.resolve(input), "utf8"));
   const output = path.join(path.dirname(path.resolve(input)), "index.html");
   await writeFile(output, compositionFromStoryboard(storyboard, seconds), "utf8");
-  console.log(output);
+  process.stdout.write(`${output}\n`);
 }
