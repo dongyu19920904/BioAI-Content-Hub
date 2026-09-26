@@ -109,12 +109,13 @@ jobs:
           test -s release-input/unpublished-demo.mp4
           test -s release-input/manifest.json
           grep -q '"channel_status": "not_published"' release-input/manifest.json
+          cp release-input/unpublished-demo.mp4 "release-input/$ASSET_NAME"
           if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fxq "$ASSET_NAME"; then
-              gh release upload "$RELEASE_TAG" "release-input/unpublished-demo.mp4#$ASSET_NAME" --repo "$GITHUB_REPOSITORY"
+              gh release upload "$RELEASE_TAG" "release-input/$ASSET_NAME" --repo "$GITHUB_REPOSITORY"
             fi
           else
-            gh release create "$RELEASE_TAG" "release-input/unpublished-demo.mp4#$ASSET_NAME" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "pyaging 公开样本中文演示 v1" --notes "基于公开示例的科研软件演示，不是个人寿命预测或医疗建议。源码：https://github.com/lucascamillomd/pyaging/tree/v0.5.2；复现说明：https://life.aivora.cn/projects/pyaging-public-demo/ 。视频由本仓库已通过测试的工作流生成。" --latest=false
+            gh release create "$RELEASE_TAG" "release-input/$ASSET_NAME" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "pyaging 公开样本中文演示 v1" --notes "基于公开示例的科研软件演示，不是个人寿命预测或医疗建议。源码：https://github.com/lucascamillomd/pyaging/tree/v0.5.2；复现说明：https://life.aivora.cn/projects/pyaging-public-demo/ 。视频由本仓库已通过测试的工作流生成。" --latest=false
           fi
           gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fxq "$ASSET_NAME"
           gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json url,assets --jq '{url, assets: [.assets[].name]}'
