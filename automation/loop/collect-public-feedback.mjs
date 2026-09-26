@@ -1,0 +1,61 @@
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(here, "../..");
+const source = "https://api.github.com/repos/dongyu19920904/BioAI-Daily-Web/issues";
+const opportunityPattern = /^\[机会反馈\]\s+(opp_[a-f0-9]{16})(?:\b|$)/;
+
+/** Public issue counts are unverified reports, never user or revenue measurements. */
+export function summarizePublicFeedback(issues, generatedAt) {
+  const byOpportunity = new Map();
+  for (const issue of issues) {
+    if (issue.pull_request || !issue.labels?.some((label) => label.name === "opportunity-feedback")) continue;
+    const id = String(issue.title || "").match(opportunityPattern)?.[1];
+    if (!id || !Number.isSafeInteger(issue.number)) continue;
+    const item = byOpportunity.get(id) || { opportunity_id: id, reported_issue_count: 0, open_issue_count: 0, closed_issue_count: 0 };
+    item.reported_issue_count += 1;
+    if (issue.state === "open") item.open_issue_count += 1;
+    if (issue.state === "closed") item.closed_issue_count += 1;
+    byOpportunity.set(id, item);
+  }
+  return {
+    schema_version: 1,
+    generated_at: generatedAt,
+    source: "public_github_issue_titles_only",
+    caveat_zh: "仅统计带标签和机会编号的公开 Issue；未核验身份、实际使用、独立用户、付费或疗效。正文、用户名和个人资料不进入本文件。",
+    opportunities: [...byOpportunity.values()].sort((a, b) => a.opportunity_id.localeCompare(b.opportunity_id)),
+  };
+}
+
+async function fetchIssues(fetcher = fetch) {
+  const token = process.env.GITHUB_TOKEN;
+  const issues = [];
+  for (let page = 1; page <= 5; page += 1) {
+    const url = `${source}?labels=opportunity-feedback&state=all&per_page=100&page=${page}`;
+    const response = await fetcher(url, {
+      signal: AbortSignal.timeout(10_000),
+      redirect: "error",
+      headers: {
+        Accept: "application/vnd.github+json",
+        "User-Agent": "BioAI-Content-Hub/1.0",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+    if (!response.ok) throw new Error(`GitHub feedback API failed: HTTP ${response.status}`);
+    const pageIssues = await response.json();
+    if (!Array.isArray(pageIssues)) throw new Error("Unexpected GitHub issues response");
+    issues.push(...pageIssues);
+    if (pageIssues.length < 100) break;
+  }
+  return issues;
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const report = summarizePublicFeedback(await fetchIssues(), new Date().toISOString());
+  const output = path.join(root, "automation/runs/feedback/public-issue-summary.json");
+  await mkdir(path.dirname(output), { recursive: true });
+  await writeFile(output, `${JSON.stringify(report, null, 2)}\n`, "utf8");
+  process.stdout.write(`${JSON.stringify({ opportunity_count: report.opportunities.length, reported_issue_count: report.opportunities.reduce((sum, item) => sum + item.reported_issue_count, 0) })}\n`);
+}

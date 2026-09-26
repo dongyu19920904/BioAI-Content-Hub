@@ -1,0 +1,30 @@
+name: Summarize public opportunity feedback
+
+on:
+  schedule:
+    - cron: "37 14 * * *" # 22:37 Asia/Shanghai; timing may drift
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Test aggregation and privacy boundaries
+        run: node --test automation/loop/collect-public-feedback.test.mjs
+      - name: Read public issue titles only into an aggregate report
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node automation/loop/collect-public-feedback.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: public-feedback-counts-${{ github.run_id }}
+          path: automation/runs/feedback/public-issue-summary.json
+          retention-days: 7

@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - run: node --test automation/loop/evidence-pack.test.mjs
+      - run: node --test automation/loop/*.test.mjs
       - run: node automation/loop/build-evidence-packs.mjs --input automation/loop/fixtures/opportunity-synthetic.json
       - name: Verify synthetic pack is blocked from publication
         run: |
