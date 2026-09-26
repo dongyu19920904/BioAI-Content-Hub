@@ -29,6 +29,13 @@ export const NAV_LINKS: NavProject[] = [
     icon: "S",
   },
   {
+    title: "生物年龄时钟开源试跑",
+    desc: "复用 pyaging 和公开样本，在 GitHub 免费运行器验证研究软件；不提供个人诊断。",
+    url: "/projects/pyaging-public-demo",
+    tag: "开源试跑",
+    icon: "R",
+  },
+  {
     title: "AI 延续学日报",
     desc: "每天的原始信号和商机来源，适合作为内容生产输入。",
     url: "https://news.aibioo.cn",
