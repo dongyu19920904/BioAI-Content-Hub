@@ -9,3 +9,8 @@ test("makes bounded timed video HTML without interpreting story text as markup",
   assert.doesNotMatch(html, /<script>alert/);
   assert.doesNotMatch(html, /scene-2/);
 });
+
+test("accepts a real project pilot without mislabelling it as a daily opportunity", () => {
+  const html = compositionFromStoryboard({ opportunity_id: "project_0123456789abcdef", scenes: [{ seconds: 4, text: "公开样本试跑" }] });
+  assert.match(html, /project_0123456789abcdef/);
+});

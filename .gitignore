@@ -29,3 +29,4 @@ public/pagefind
 
 # Generated evidence-first media drafts (local runs and CI artifacts)
 automation/runs/
+automation/projects/__pycache__/

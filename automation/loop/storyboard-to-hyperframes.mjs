@@ -8,7 +8,7 @@ function escapeHtml(value) {
 
 /** Static timed composition for the open-source HyperFrames CLI. */
 export function compositionFromStoryboard(storyboard, maxSeconds = 90) {
-  if (!/^opp_[a-f0-9]{16}$/.test(storyboard?.opportunity_id || "") || !Array.isArray(storyboard.scenes) || !storyboard.scenes.length) {
+  if (!/^(?:opp|project)_[a-f0-9]{16}$/.test(storyboard?.opportunity_id || "") || !Array.isArray(storyboard.scenes) || !storyboard.scenes.length) {
     throw new Error("Invalid storyboard");
   }
   if (!Number.isFinite(maxSeconds) || maxSeconds < 1 || maxSeconds > 90) throw new Error("Invalid duration limit");
