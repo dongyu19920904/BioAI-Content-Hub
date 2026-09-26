@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 20
     env:
       PIP_NO_CACHE_DIR: "1"
-      PYAGING_DATA_REVISION: v0.5.2
+      PYAGING_DATA_REVISION: v0.5.1
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
