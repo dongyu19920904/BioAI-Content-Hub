@@ -49,26 +49,23 @@ import Footer from "@/components/Footer.astro";
       <h2 class="text-xl font-semibold">中文视频：公开样本的软件演示</h2>
       <p class="text-base-content/70 mt-3 leading-7">
         这段约 47
-        秒的视频由同一份公开样本结果自动生成，附中文配音和字幕。它解释工具能做什么、不能证明什么；不是个人寿命预测或医疗建议。程序已验证音视频流、字幕、来源说明和时长，但尚未由人评定表达质量。
+        秒的视频由同一份公开样本结果自动生成，附中文配音和字幕。它解释工具能做什么、不能证明什么；不是个人寿命预测或医疗建议。程序已验证音视频流、字幕、来源说明和时长，但尚未由人评定表达质量。视频目前由
+        GitHub Release 提供下载，本站不冒称已在 B 站发布。
       </p>
-      <video
-        class="mt-5 w-full rounded-lg"
-        controls
-        preload="metadata"
-        aria-label="pyaging 公开样本中文演示视频"
-      >
-        <source
-          src="https://github.com/dongyu19920904/BioAI-Content-Hub/releases/download/pyaging-public-video-v1/pyaging-public-demo-zh.mp4"
-          type="video/mp4"
-        />
-        浏览器不支持内嵌播放，请使用下方下载链接。
-      </video>
-      <p class="mt-3 text-sm">
+      <p class="mt-5">
+        <a
+          class="text-accent underline"
+          href="https://github.com/dongyu19920904/BioAI-Content-Hub/releases/download/pyaging-public-video-v1/pyaging-public-demo-zh.mp4"
+          target="_blank"
+          rel="noopener noreferrer">下载中文演示视频 MP4（约 1.4 MB）</a
+        >
+      </p>
+      <p class="mt-2 text-sm">
         <a
           class="text-accent underline"
           href="https://github.com/dongyu19920904/BioAI-Content-Hub/releases/tag/pyaging-public-video-v1"
           target="_blank"
-          rel="noopener noreferrer">查看视频发布记录和下载文件</a
+          rel="noopener noreferrer">查看 GitHub Release 发布记录</a
         >
       </p>
     </section>
