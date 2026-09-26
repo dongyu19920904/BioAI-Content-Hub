@@ -1,6 +1,13 @@
 name: Unpublished Chinese research video pilot
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "automation/projects/render_pyaging_video.py"
+      - "automation/projects/pyaging_public_demo.py"
+      - "automation/loop/storyboard-to-hyperframes.mjs"
+      - ".github/workflows/pyaging-voiced-video.yml"
   pull_request:
     paths:
       - "automation/projects/render_pyaging_video.py"
@@ -78,3 +85,36 @@ jobs:
             automation/runs/pyaging-public-video/bilibili-description.md
             automation/runs/pyaging-public-video/manifest.json
           retention-days: 3
+
+  publish-public-project-video:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: render-public-research-pilot
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: pyaging-public-video-v1
+      ASSET_NAME: pyaging-public-demo-zh.mp4
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: unpublished-pyaging-voiced-video-${{ github.run_id }}
+          path: release-input
+      - name: Publish once to this repository's release area
+        run: |
+          set -euo pipefail
+          test -s release-input/unpublished-demo.mp4
+          test -s release-input/manifest.json
+          grep -q '"channel_status": "not_published"' release-input/manifest.json
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fxq "$ASSET_NAME"; then
+              gh release upload "$RELEASE_TAG" "release-input/unpublished-demo.mp4#$ASSET_NAME" --repo "$GITHUB_REPOSITORY"
+            fi
+          else
+            gh release create "$RELEASE_TAG" "release-input/unpublished-demo.mp4#$ASSET_NAME" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "pyaging 公开样本中文演示 v1" --notes "基于公开示例的科研软件演示，不是个人寿命预测或医疗建议。源码：https://github.com/lucascamillomd/pyaging/tree/v0.5.2；复现说明：https://life.aivora.cn/projects/pyaging-public-demo/ 。视频由本仓库已通过测试的工作流生成。" --latest=false
+          fi
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fxq "$ASSET_NAME"
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json url,assets --jq '{url, assets: [.assets[].name]}'
