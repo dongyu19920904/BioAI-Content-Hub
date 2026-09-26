@@ -140,7 +140,10 @@ const displayPosts = [...relatedPosts, ...fallbackPosts];
         <section class="mt-8">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <h2 class="text-lg font-semibold tracking-wide">推荐阅读</h2>
-            <a href="/posts" class="text-sm text-foreground/70 hover:text-accent">
+            <a
+              href="/posts"
+              class="text-sm text-foreground/70 hover:text-accent"
+            >
               查看全部 →
             </a>
           </div>
@@ -326,5 +329,3 @@ const displayPosts = [...relatedPosts, ...fallbackPosts];
     window.scrollTo({ left: 0, top: 0, behavior: "instant" })
   );
 </script>
-
-

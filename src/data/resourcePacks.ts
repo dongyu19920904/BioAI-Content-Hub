@@ -13,7 +13,12 @@ export const RESOURCE_PACKS: ResourcePack[] = [
     title: "AI 延续学商机筛选清单",
     desc: "把每天日报里的论文、工具、项目和新闻筛成可写文章、可做资料包、可做小工具的机会。",
     audience: "想做 AI + 健康/长寿内容，但不知道每天该写什么的人。",
-    deliverables: ["商机评分表", "目标鱼塘判断表", "合规风险清单", "今日最小动作模板"],
+    deliverables: [
+      "商机评分表",
+      "目标鱼塘判断表",
+      "合规风险清单",
+      "今日最小动作模板",
+    ],
     priceHint: "9.9 元清单 / 19.9 元扩展模板",
     status: "可测试",
     relatedPost: "/posts/ai-longevity-content-engine-blueprint",
@@ -21,8 +26,14 @@ export const RESOURCE_PACKS: ResourcePack[] = [
   {
     title: "可穿戴数据复盘模板",
     desc: "把睡眠、压力、心率、步数等可穿戴数据整理成 7 天观察表，而不是做医疗判断。",
-    audience: "有 Apple Watch / 华为手环 / Garmin / Oura 等设备，但不知道怎么看数据的人。",
-    deliverables: ["7 天记录表", "异常提醒话术", "家人沟通版说明", "AI 复盘提示词"],
+    audience:
+      "有 Apple Watch / 华为手环 / Garmin / Oura 等设备，但不知道怎么看数据的人。",
+    deliverables: [
+      "7 天记录表",
+      "异常提醒话术",
+      "家人沟通版说明",
+      "AI 复盘提示词",
+    ],
     priceHint: "19.9 元资料包",
     status: "构思中",
     relatedPost: "/posts/wearable-data-review-pack",
