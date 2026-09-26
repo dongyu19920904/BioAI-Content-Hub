@@ -1,0 +1,34 @@
+name: Verify public project page and video link
+
+on:
+  workflow_run:
+    workflows: ["Deploy to GitHub Pages"]
+    types: [completed]
+  schedule:
+    - cron: "13 3 * * 1" # Weekly; GitHub schedules may drift
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-public-project:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Fetch the real public page and its video asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          page='https://life.aivora.cn/projects/pyaging-public-demo/'
+          video='https://github.com/dongyu19920904/BioAI-Content-Hub/releases/download/pyaging-public-video-v1/pyaging-public-demo-zh.mp4'
+          curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$page" --output page.html
+          grep -Fq 'pyaging-public-video-v1' page.html
+          grep -Fq '下载中文演示视频' page.html
+          code="$(curl --silent --show-error --location --head --connect-timeout 10 --max-time 25 --output /dev/null --write-out '%{http_code}' "$video")"
+          test "$code" = '200'
+          echo "Project page and public video are reachable. Video HEAD HTTP $code." >> "$GITHUB_STEP_SUMMARY"
+      - name: Explain a failed website check without changing publication status
+        if: failure()
+        run: echo 'Public project page or video could not be independently reached from GitHub runner; inspect DNS, HTTPS and Pages. A successful deployment receipt alone is insufficient.' >> "$GITHUB_STEP_SUMMARY"
