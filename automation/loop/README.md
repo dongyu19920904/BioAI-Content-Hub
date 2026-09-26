@@ -52,4 +52,4 @@ node automation/loop/storyboard-to-hyperframes.mjs automation/runs/YYYY-MM-DD/op
 
 视频使用 [HyperFrames](https://github.com/heygen-com/hyperframes) 的 HTML 渲染器。当前程序可产出带时间轴的 `index.html`；已在 Windows 本机通过 `lint` 与 `check`，但本机缺 FFmpeg 且 D 盘空间不足，不能把它写成“本地已出 MP4”。独立的 `video-render-smoke.yml` 在 GitHub 托管运行器用合成样本验证 MP4。合成预览无配音、不是可发布的完整 B 站作品；正式成片仍需对中文配音、字幕、版权、内容事实和渲染成本逐项验证。
 
-`pyaging-voiced-video.yml` 是更进一步的未发布试点：重新运行公开数据上的 pyaging 示例，读取其聚合结果，以 Apache-2.0 的 Kokoro 中文模型配音，由 HyperFrames 生成画面，并烧录字幕。它的输出是短期 Actions 工件，**不会上传 B 站或公众号**。自动验收检查六段脚本、音视频轨、时长、字幕和“未发布”状态；最终表达质量仍须由人看成片评估。这个试点只演示科研软件，不把生物年龄指标说成真实寿命或疗效。
+`pyaging-voiced-video.yml` 是更进一步的未发布试点：重新运行公开数据上的 pyaging 示例，读取其聚合结果，以 Apache-2.0 的 Kokoro 中文模型配音，由 HyperFrames 生成画面，并烧录字幕，同时生成含源码与复现入口的 B 站说明草稿。它的输出是短期 Actions 工件，**不会上传 B 站或公众号**。自动验收检查六段脚本、音视频轨、时长、字幕、说明链接和“未发布”状态；最终表达质量仍须由人看成片评估。这个试点只演示科研软件，不把生物年龄指标说成真实寿命或疗效。

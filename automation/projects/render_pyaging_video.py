@@ -14,6 +14,7 @@ OUTPUT = Path("automation/runs/pyaging-public-video")
 SAMPLE_RATE = 24000
 RESEARCH_URL = "https://github.com/lucascamillomd/pyaging/tree/v0.5.2"
 PROJECT_ID = "project_" + hashlib.sha256(b"pyaging-public-demo-v1").hexdigest()[:16]
+PROJECT_URL = "https://life.aivora.cn/projects/pyaging-public-demo/"
 
 
 def checked_lines(summary):
@@ -91,10 +92,21 @@ def main():
     sf.write(OUTPUT / "narration.wav", np.concatenate(audio), SAMPLE_RATE)
     (OUTPUT / "storyboard.json").write_text(json.dumps({"opportunity_id": PROJECT_ID, "scenes": scenes}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUTPUT / "subtitles.srt").write_text("\n".join(subtitles), encoding="utf-8")
+    (OUTPUT / "bilibili-description.md").write_text(
+        "# 用公开样本试跑 pyaging：生物年龄开源工具，不是延寿疗法\n\n"
+        "本视频展示 pyaging 0.5.2 在 30 条公开示例数据上的软件运行结果；没有使用个人病历。"
+        "PhenoAge、KDM Age 和稳态失调是不同指标，第三项不是年龄。"
+        "这些数值不能用于推断个人寿命、诊断疾病或证明干预有效。\n\n"
+        f"项目说明与复现步骤：{PROJECT_URL}?utm_source=bilibili&utm_medium=video&utm_campaign={PROJECT_ID}\n\n"
+        f"上游开源项目：{RESEARCH_URL}\n\n"
+        "仅作科研软件演示，非医疗建议。请勿据此自行用药或改变治疗。\n",
+        encoding="utf-8",
+    )
     (OUTPUT / "manifest.json").write_text(json.dumps({
         "kind": "unpublished_public_research_video_pilot",
         "project_id": PROJECT_ID,
         "source": RESEARCH_URL,
+        "project_page": PROJECT_URL,
         "model": "hexgrad/Kokoro-82M-v1.1-zh",
         "model_license": "Apache-2.0 (per model card; recheck before commercial release)",
         "sample_count": 30,

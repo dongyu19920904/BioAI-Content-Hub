@@ -63,6 +63,9 @@ jobs:
           assert {'video', 'audio'} <= {stream['codec_type'] for stream in info['streams']}
           assert abs(float(info['format']['duration']) - manifest['duration_seconds']) < 1.5
           assert (root / 'subtitles.srt').read_text(encoding='utf-8').count('-->') == 6
+          description = (root / 'bilibili-description.md').read_text(encoding='utf-8')
+          assert manifest['source'] in description and manifest['project_page'] in description
+          assert manifest['project_id'] in description and '非医疗建议' in description
           print(json.dumps({'duration': info['format']['duration'], 'streams': [stream['codec_type'] for stream in info['streams']], 'channel_status': manifest['channel_status']}))
           PY
       - uses: actions/upload-artifact@v4
@@ -72,5 +75,6 @@ jobs:
           path: |
             automation/runs/pyaging-public-video/unpublished-demo.mp4
             automation/runs/pyaging-public-video/subtitles.srt
+            automation/runs/pyaging-public-video/bilibili-description.md
             automation/runs/pyaging-public-video/manifest.json
           retention-days: 3
