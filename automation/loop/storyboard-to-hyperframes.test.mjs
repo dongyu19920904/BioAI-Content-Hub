@@ -9,3 +9,15 @@ test("makes bounded timed video HTML without interpreting story text as markup",
   assert.doesNotMatch(html, /<script>alert/);
   assert.doesNotMatch(html, /scene-2/);
 });
+
+test("accepts a real project pilot without mislabelling it as a daily opportunity", () => {
+  const html = compositionFromStoryboard({ opportunity_id: "project_0123456789abcdef", scenes: [{ seconds: 4, text: "公开样本试跑" }] });
+  assert.match(html, /project_0123456789abcdef/);
+});
+
+test("animates child content without fighting renderer-managed clip visibility", () => {
+  const html = compositionFromStoryboard({ opportunity_id: "project_0123456789abcdef", scenes: [{ seconds: 4, text: "第一页" }, { seconds: 4, text: "第二页" }] });
+  assert.match(html, /id="content-2"/);
+  assert.match(html, /tl\.fromTo\("#content-2"/);
+  assert.doesNotMatch(html, /autoAlpha/);
+});

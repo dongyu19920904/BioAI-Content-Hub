@@ -1,0 +1,80 @@
+name: Unpublished Chinese research video pilot
+
+on:
+  pull_request:
+    paths:
+      - "automation/projects/render_pyaging_video.py"
+      - "automation/projects/test_render_pyaging_video.py"
+      - "automation/loop/storyboard-to-hyperframes.mjs"
+      - "automation/loop/storyboard-to-hyperframes.test.mjs"
+      - ".github/workflows/pyaging-voiced-video.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render-public-research-pilot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PIP_NO_CACHE_DIR: "1"
+      PYAGING_DATA_REVISION: v0.5.1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install open-source renderer requirements
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq espeak-ng ffmpeg fonts-noto-cjk
+      - name: Install CPU scientific and Chinese voice tools
+        run: |
+          python -m pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install pyaging==0.5.2 kokoro==0.9.4 "misaki[zh]==0.9.4" soundfile==0.13.1
+      - name: Verify narration policy and renderer logic
+        run: |
+          python -m unittest discover -s automation/projects -p 'test_render_pyaging_video.py'
+          node --test automation/loop/storyboard-to-hyperframes.test.mjs
+      - name: Reproduce aggregate data and generate narration, captions and storyboard
+        run: |
+          python automation/projects/pyaging_public_demo.py
+          python automation/projects/render_pyaging_video.py
+          node automation/loop/storyboard-to-hyperframes.mjs automation/runs/pyaging-public-video/storyboard.json
+      - name: Render with pinned HyperFrames and mux voice and captions
+        run: |
+          mv automation/runs/pyaging-public-video/narration.wav automation/runs/pyaging-public-demo/narration.wav
+          npx --yes hyperframes@0.8.78 lint automation/runs/pyaging-public-video
+          npx --yes hyperframes@0.8.78 check automation/runs/pyaging-public-video
+          npx --yes hyperframes@0.8.78 render automation/runs/pyaging-public-video --quality draft --fps 12 --output automation/runs/pyaging-public-video/visual.mp4
+          ffmpeg -hide_banner -loglevel error -y -i automation/runs/pyaging-public-video/visual.mp4 -i automation/runs/pyaging-public-demo/narration.wav -vf "subtitles=automation/runs/pyaging-public-video/subtitles.srt:force_style='FontName=Noto Sans CJK SC,FontSize=24'" -map 0:v:0 -map 1:a:0 -c:v libx264 -pix_fmt yuv420p -c:a aac -b:a 128k -shortest automation/runs/pyaging-public-video/unpublished-demo.mp4
+      - name: Check real media streams and safe manifest
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          root = Path('automation/runs/pyaging-public-video')
+          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+          assert manifest['channel_status'] == 'not_published'
+          assert 15 < manifest['duration_seconds'] < 90
+          info = json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-show_streams', '-show_format', '-of', 'json', str(root / 'unpublished-demo.mp4')]))
+          assert {'video', 'audio'} <= {stream['codec_type'] for stream in info['streams']}
+          assert abs(float(info['format']['duration']) - manifest['duration_seconds']) < 1.5
+          assert (root / 'subtitles.srt').read_text(encoding='utf-8').count('-->') == 6
+          description = (root / 'bilibili-description.md').read_text(encoding='utf-8')
+          assert manifest['source'] in description and manifest['project_page'] in description
+          assert manifest['project_id'] in description and '非医疗建议' in description
+          print(json.dumps({'duration': info['format']['duration'], 'streams': [stream['codec_type'] for stream in info['streams']], 'channel_status': manifest['channel_status']}))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: unpublished-pyaging-voiced-video-${{ github.run_id }}
+          path: |
+            automation/runs/pyaging-public-video/unpublished-demo.mp4
+            automation/runs/pyaging-public-video/subtitles.srt
+            automation/runs/pyaging-public-video/bilibili-description.md
+            automation/runs/pyaging-public-video/manifest.json
+          retention-days: 3
