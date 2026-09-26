@@ -76,7 +76,7 @@ const dailyPath = arg("daily");
 const date = arg("date", new Date().toISOString().slice(0, 10));
 
 if (!dailyPath) {
-  console.error("Usage: node automation/loop/generate-draft.mjs --daily daily.md --date YYYY-MM-DD");
+  process.stderr.write("Usage: node automation/loop/generate-draft.mjs --daily daily.md --date YYYY-MM-DD\n");
   process.exit(1);
 }
 
@@ -92,5 +92,5 @@ const title = titleMatch ? titleMatch[1] : `AI 延续学内容草稿 ${date}`;
 const blogFile = path.join(root, "src", "data", "blog", `${slugify(title)}.md`);
 await fs.writeFile(blogFile, output, "utf8");
 
-console.log(`Draft written: ${blogFile}`);
-console.log(`Run log written: ${path.join(runsDir, `${date}.md`)}`);
+process.stdout.write(`Draft written: ${blogFile}\n`);
+process.stdout.write(`Run log written: ${path.join(runsDir, `${date}.md`)}\n`);

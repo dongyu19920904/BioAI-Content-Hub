@@ -45,11 +45,10 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
               <span class="sr-only">RSS Feed</span>
             </a>
           </div>
-          <p class="launchpad-tagline">
-            从商机日报到文章、资料包和轻产品
-          </p>
+          <p class="launchpad-tagline">从商机日报到文章、资料包和轻产品</p>
           <p class="launchpad-sub">
-            每天从 AI 延续学日报里筛一个可落地灵感，写成真正能帮人的内容，再沉淀成可售卖资料包。
+            每天从 AI
+            延续学日报里筛一个可落地灵感，写成真正能帮人的内容，再沉淀成可售卖资料包。
           </p>
           <div class="launchpad-chips">
             <span class="launchpad-chip">Signal · 商机筛选</span>
@@ -57,7 +56,9 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
             <span class="launchpad-chip">Pack · 资料包交付</span>
           </div>
         </div>
-        <div class="launchpad-grid launchpad-panel grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div
+          class="launchpad-grid launchpad-panel grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
+        >
           {
             NAV_LINKS.map((link, index) => (
               <a
@@ -66,7 +67,9 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
                 style={`--delay: ${index * 90}ms`}
                 target={link.url.startsWith("http") ? "_blank" : "_self"}
                 rel={
-                  link.url.startsWith("http") ? "noopener noreferrer" : undefined
+                  link.url.startsWith("http")
+                    ? "noopener noreferrer"
+                    : undefined
                 }
               >
                 <div class="flex items-center gap-3">
@@ -86,21 +89,22 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
     </section>
 
     {/* ===== 站点说明：移至下方，结构化呈现 ===== */}
-    <section id="about" class="pt-10 pb-8 border-b border-border">
+    <section id="about" class="border-b border-border pt-10 pb-8">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <h2 class="text-2xl font-semibold tracking-wide">这个站点做什么</h2>
-        <span class="text-xs uppercase tracking-[0.3em] text-base-content/50">
+        <span class="text-base-content/50 text-xs tracking-[0.3em] uppercase">
           Operator Notes
         </span>
       </div>
       <div class="mt-6 grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-        <div class="space-y-3 text-base-content/80">
+        <div class="text-base-content/80 space-y-3">
           <p class="text-lg text-foreground">
             这里不是普通资讯站，而是 AI 延续学内容和资料包的实验仓库。
           </p>
           <p>
-            核心流程是：<strong>日报信号 -> 商机判断 -> 文章 -> 资料包 -> 变现测试</strong>。
-            每篇内容都要回答一个问题：读者今天能用它做什么。
+            核心流程是：<strong
+              >日报信号 → 商机判断 → 文章 → 资料包 → 变现测试</strong
+            >。 每篇内容都要回答一个问题：读者今天能用它做什么。
           </p>
           <p>
             适合沉淀检测指标解释、可穿戴数据模板、论文项目复盘、家人沟通话术、工具导航和小产品说明书。
@@ -109,9 +113,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
             // only display if at least one social link is enabled
             SOCIALS.length > 0 && (
               <div class="mt-4 flex max-sm:flex-col sm:items-center">
-                <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
-                  找我聊聊
-                </div>
+                <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">找我聊聊</div>
                 <Socials />
               </div>
             )

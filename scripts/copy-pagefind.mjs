@@ -8,4 +8,4 @@ const target = path.join(root, "public", "pagefind");
 await fs.rm(target, { recursive: true, force: true });
 await fs.mkdir(path.dirname(target), { recursive: true });
 await fs.cp(source, target, { recursive: true });
-console.log(`Copied ${source} -> ${target}`);
+process.stdout.write(`Copied ${source} -> ${target}\n`);

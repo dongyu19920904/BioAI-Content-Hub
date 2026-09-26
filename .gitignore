@@ -26,3 +26,6 @@ pnpm-debug.log*
 # pagefind
 
 public/pagefind
+
+# Generated evidence-first media drafts (local runs and CI artifacts)
+automation/runs/
