@@ -28,11 +28,26 @@ test("unverified evidence creates consistent drafts but blocks publication", () 
 });
 
 test("verified claims may enter channel authorization, not pretend to be published", () => {
-  const record = { ...input, source_verified: true, health_claim_review_passed: true, verified_claims: [{ text: "研究对象与方法已核查；尚未证明延长人类寿命。", source_url: "https://doi.org/10.1002/alz.71772" }] };
+  const record = { ...input, source_verified: true, health_claim_review_passed: true, primary_source_candidates: [{ doi: "10.1002/alz.71772", url: "https://doi.org/10.1002/alz.71772", relationship_verified: true }], verified_claims: [{ text: "研究对象与方法已核查；尚未证明延长人类寿命。", source_url: "https://doi.org/10.1002/alz.71772" }] };
   const result = buildEvidencePack(record, page);
   assert.equal(result.gate.status, "ready_for_channel_authorization");
   assert.match(result.files.website, /尚未证明延长人类寿命/);
   assert.equal("published_url" in result, false);
+});
+
+test("health claims cannot pass using only a news URL or an unverified DOI relationship", () => {
+  const record = { ...input, source_verified: true, health_claim_review_passed: true, verified_claims: [{ text: "研究对象已核查。", source_url: input.source_urls[0] }] };
+  const newsOnly = buildEvidencePack(record, page);
+  assert.equal(newsOnly.gate.status, "blocked_from_publication");
+  assert.match(newsOnly.gate.reasons.join(" "), /一手论文来源/);
+  const doiOnly = buildEvidencePack({ ...record, verified_claims: [{ text: "研究对象已核查。", source_url: "https://doi.org/10.1002/alz.71772" }] }, page);
+  assert.equal(doiOnly.gate.status, "blocked_from_publication");
+  assert.match(doiOnly.gate.reasons.join(" "), /一手论文来源/);
+});
+
+test("non-health source rules remain unchanged", () => {
+  const record = { ...input, risk_flags: [], source_verified: true, verified_claims: [{ text: "项目仓库已核查。", source_url: input.source_urls[0] }] };
+  assert.equal(buildEvidencePack(record, page).gate.status, "ready_for_channel_authorization");
 });
 
 test("invalid records fail closed", () => {

@@ -12,12 +12,26 @@ function sourceLinks(record) {
   }))];
 }
 
+function verifiedPrimarySourceLinks(record) {
+  return new Set((record.primary_source_candidates || [])
+    .filter((candidate) => candidate.relationship_verified === true
+      && /^10\.\d{4,9}\/[a-z0-9._;()/:+-]+$/i.test(candidate.doi || "")
+      && candidate.url === `https://doi.org/${candidate.doi}`)
+    .map((candidate) => candidate.url));
+}
+
 function releaseGate(record) {
   const reasons = [];
   if (record.source_verified !== true) reasons.push("一手来源与具体研究结论尚未核验");
   if (!Array.isArray(record.verified_claims) || !record.verified_claims.length) reasons.push("缺少逐条可追溯的已核验事实");
   else if (record.verified_claims.some((claim) => !clean(claim.text) || !sourceLinks(record).includes(claim.source_url))) reasons.push("已核验事实缺少对应的来源链接");
-  if (record.risk_flags?.includes("health_claim_review") && record.health_claim_review_passed !== true) reasons.push("健康或医疗表述门禁未通过");
+  if (record.risk_flags?.includes("health_claim_review")) {
+    if (record.health_claim_review_passed !== true) reasons.push("健康或医疗表述门禁未通过");
+    const verifiedPrimary = verifiedPrimarySourceLinks(record);
+    if (!Array.isArray(record.verified_claims) || record.verified_claims.some((claim) => !verifiedPrimary.has(claim.source_url))) {
+      reasons.push("健康事实缺少已核验关联的一手论文来源");
+    }
+  }
   if (!sourceLinks(record).length) reasons.push("缺少可打开的 HTTPS 来源");
   return { status: reasons.length ? "blocked_from_publication" : "ready_for_channel_authorization", reasons };
 }
