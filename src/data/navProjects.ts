@@ -36,6 +36,13 @@ export const NAV_LINKS: NavProject[] = [
     icon: "R",
   },
   {
+    title: "AI 延寿研究开源工具导航",
+    desc: "按研究输入筛选 6 个有仓库和许可证的工具，区分已试跑与仅收录。",
+    url: "/projects/open-source-tools",
+    tag: "工具导航",
+    icon: "T",
+  },
+  {
     title: "AI 延续学日报",
     desc: "每天的原始信号和商机来源，适合作为内容生产输入。",
     url: "https://news.aibioo.cn",
