@@ -43,6 +43,7 @@ https://life.aivora.cn
 不要把 API Key 写进仓库。自动化脚本只从环境变量读取：
 
 - `ANTHROPIC_API_URL`
-- `ANTHROPIC_API_KEY`
+- `RUNTOKEN_API_KEY`（轮换后，仅存私有 Secret；不把聊天中出现过的 Key 用于无人值守任务）
 - `DEFAULT_ANTHROPIC_MODEL`
+- `DEFAULT_ANTHROPIC_BACKUP_MODEL`
 - `GITHUB_TOKEN`

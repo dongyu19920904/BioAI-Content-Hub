@@ -3,9 +3,10 @@
 ## 第一阶段：半自动
 
 ```powershell
-$env:ANTHROPIC_API_URL="https://business.newcli.com"
-$env:ANTHROPIC_API_KEY="你的密钥"
+$env:ANTHROPIC_API_URL="https://www.runtoken.ai"
+# RUNTOKEN_API_KEY 由私有 Secret / 安全的临时环境注入，不在命令行直接敲明文
 $env:DEFAULT_ANTHROPIC_MODEL="claude-sonnet-5"
+$env:DEFAULT_ANTHROPIC_BACKUP_MODEL="claude-opus-4-8"
 node automation/loop/generate-draft.mjs --daily daily.md --date 2026-07-09
 ```
 
@@ -15,7 +16,7 @@ node automation/loop/generate-draft.mjs --daily daily.md --date 2026-07-09
 - `src/data/blog/generated-YYYY-MM-DD.md`
 - `automation/runs/YYYY-MM-DD-resource-pack.md`
 
-人工确认后再提交。
+人工确认后再提交。这个旧半自动脚本已改为只向 RunToken 的 Anthropic Messages 端点发请求；主模型失败时仅对模型不存在、限流或服务端故障尝试备选模型。它不属于每日自动发布链。当前无人值守 AI 费用上限为每日 5 元；在服务商后台提供可核验的硬限额前，不启用定时模型调用，避免把调用次数误当费用上限。
 
 ## 第二阶段：全自动
 
@@ -31,8 +32,9 @@ node automation/loop/generate-draft.mjs --daily daily.md --date 2026-07-09
 ## 需要的 Secret
 
 - `ANTHROPIC_API_URL`
-- `ANTHROPIC_API_KEY`
+- `RUNTOKEN_API_KEY`（仅保存在私有 Secret 或临时环境变量；不要使用聊天中暴露的旧 Key）
 - `DEFAULT_ANTHROPIC_MODEL`
+- `DEFAULT_ANTHROPIC_BACKUP_MODEL`
 - `GITHUB_TOKEN`
 
 不要把任何密钥写进仓库。
