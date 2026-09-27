@@ -38,10 +38,20 @@ jobs:
             source="https://raw.githubusercontent.com/dongyu19920904/BioAI-Daily-Web/main/static/data/opportunities/${section}/${report_date}.json"
             input="automation/runs/inputs/${section}-${report_date}.json"
             if curl --fail --silent --show-error --location --max-time 15 "$source" --output "$input"; then
-              node automation/loop/build-evidence-packs.mjs --input "$input" --output-dir "automation/runs/${section}"
               found=$((found + 1))
             else
               echo "${section} ${report_date}: structured report unavailable; no draft invented"
+            fi
+          done
+          for section in opportunity project-opportunity; do
+            input="automation/runs/inputs/${section}-${report_date}.json"
+            [[ -f "$input" ]] || continue
+            if [[ "$section" == "opportunity" ]]; then other="project-opportunity"; else other="opportunity"; fi
+            related="automation/runs/inputs/${other}-${report_date}.json"
+            if [[ -f "$related" ]]; then
+              node automation/loop/build-evidence-packs.mjs --input "$input" --related-input "$related" --output-dir "automation/runs/${section}"
+            else
+              node automation/loop/build-evidence-packs.mjs --input "$input" --output-dir "automation/runs/${section}"
             fi
           done
           echo "Found ${found} structured report(s)"
