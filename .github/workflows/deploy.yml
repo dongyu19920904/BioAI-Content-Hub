@@ -9,6 +9,9 @@ on:
     branches: [main]
   # 允许手动触发
   workflow_dispatch:
+  # 仅刷新公开仓库元数据和重建静态页，不运行第三方代码。
+  schedule:
+    - cron: "17 14 * * *"
 
 # 设置 GITHUB_TOKEN 的权限以允许部署到 GitHub Pages
 permissions:
@@ -54,6 +57,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         working-directory: ${{ env.BUILD_PATH }}
+
+      - name: Refresh curated research-tool metadata
+        run: node automation/projects/refresh_open_source_catalog.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build with Astro
         run: |

@@ -1,0 +1,101 @@
+{
+  "observed_at": "2026-09-27T14:37:49.693Z",
+  "projects": [
+    {
+      "repo": "lucascamillomd/pyaging",
+      "name": "pyaging",
+      "category": "多组学时钟",
+      "input_zh": "甲基化、转录组或血液生化等与所选时钟匹配的研究数据；可先用项目公开样本",
+      "output_zh": "研究用生物年龄时钟分数",
+      "start_zh": "已有本站公开样本的自动试跑与中文视频",
+      "demo_url": "/projects/pyaging-public-demo",
+      "caution_zh": "分数不是个人寿命预测或干预有效性证明。",
+      "github": {
+        "url": "https://github.com/lucascamillomd/pyaging",
+        "license": "MIT",
+        "archived": false,
+        "pushed_at": "2026-09-25T08:27:58Z"
+      }
+    },
+    {
+      "repo": "gangcai/scageclock",
+      "name": "scAgeClock",
+      "category": "单细胞时钟",
+      "input_zh": "按项目格式准备的单细胞转录组 .h5ad 文件与模型权重",
+      "output_zh": "细胞层面的模型年龄估计",
+      "start_zh": "先读原仓库 Quick Start；本站尚未试跑",
+      "demo_url": null,
+      "caution_zh": "需要研究数据和生信能力；尚未在本站复现。",
+      "github": {
+        "url": "https://github.com/gangcai/scageclock",
+        "license": "BSD-3-Clause",
+        "archived": false,
+        "pushed_at": "2026-08-14T01:56:26Z"
+      }
+    },
+    {
+      "repo": "sunericd/SpatialAgingClock",
+      "name": "Spatial Aging Clocks",
+      "category": "单细胞时钟",
+      "input_zh": "与模型适配的脑组织单细胞或空间转录组数据",
+      "output_zh": "研究用空间/细胞年龄时钟结果",
+      "start_zh": "先核对原仓库数据格式与依赖；本站尚未试跑",
+      "demo_url": null,
+      "caution_zh": "研究对象与模型训练数据有限，不能泛化为个人临床检测。",
+      "github": {
+        "url": "https://github.com/sunericd/SpatialAgingClock",
+        "license": "MIT",
+        "archived": false,
+        "pushed_at": "2025-04-09T21:23:34Z"
+      }
+    },
+    {
+      "repo": "ChengLiLab/SCALE",
+      "name": "SCALE",
+      "category": "单细胞时钟",
+      "input_zh": "组织单细胞转录组研究数据",
+      "output_zh": "组织层面的衰老特征与统计分析",
+      "start_zh": "适合有 R 和单细胞分析经验的研究者；本站尚未试跑",
+      "demo_url": null,
+      "caution_zh": "仓库最近推送时间较早；采用 GPL-3.0，改造和分发前需核许可证义务。",
+      "github": {
+        "url": "https://github.com/ChengLiLab/SCALE",
+        "license": "GPL-3.0",
+        "archived": false,
+        "pushed_at": "2023-07-26T12:05:03Z"
+      }
+    },
+    {
+      "repo": "Healome/openage",
+      "name": "OpenAge",
+      "category": "血液指标研究",
+      "input_zh": "与原项目模型字段匹配的血液生化研究数据",
+      "output_zh": "研究用血液生物年龄模型结果",
+      "start_zh": "先核对原仓库文档、数据用途与许可证；本站尚未试跑",
+      "demo_url": null,
+      "caution_zh": "AGPL-3.0 有网络服务源代码义务；原作者另列商业许可。不得据此提供诊断或售卖效果。",
+      "github": {
+        "url": "https://github.com/Healome/openage",
+        "license": "AGPL-3.0",
+        "archived": false,
+        "pushed_at": "2026-04-11T19:04:43Z"
+      }
+    },
+    {
+      "repo": "Noble-Lab/snATAC_aging_clocks",
+      "name": "snATAC aging clocks",
+      "category": "表观组时钟",
+      "input_zh": "单核 ATAC-seq 等研究数据；原项目部分复现数据量很大",
+      "output_zh": "脑区和细胞类型相关的年龄时钟分析结果",
+      "start_zh": "先读原仓库资源需求与复现说明；本站尚未试跑",
+      "demo_url": null,
+      "caution_zh": "部分数据可达数十 GB，不适合小白直接在免费运行器全量复现。",
+      "github": {
+        "url": "https://github.com/Noble-Lab/snATAC_aging_clocks",
+        "license": "Apache-2.0",
+        "archived": false,
+        "pushed_at": "2026-09-08T21:17:23Z"
+      }
+    }
+  ]
+}
