@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { callRunToken } from "./runtoken-client.mjs";
 
 function arg(name, fallback = "") {
   const index = process.argv.indexOf(`--${name}`);
@@ -13,41 +14,6 @@ function slugify(input) {
     .replace(/[^\p{L}\p{N}]+/gu, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 80) || "ai-longevity-draft";
-}
-
-async function callModel(prompt) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  const baseUrl = (process.env.ANTHROPIC_API_URL || "https://business.newcli.com").replace(/\/+$/, "");
-  const model = process.env.DEFAULT_ANTHROPIC_MODEL || "claude-sonnet-5";
-
-  if (!apiKey) {
-    throw new Error("Missing ANTHROPIC_API_KEY environment variable.");
-  }
-
-  const response = await fetch(`${baseUrl}/v1/messages`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      Authorization: `Bearer ${apiKey}`,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 5000,
-      temperature: 0.35,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Model API failed: ${response.status} ${await response.text()}`);
-  }
-
-  const data = await response.json();
-  return Array.isArray(data.content)
-    ? data.content.map(item => item.text || "").join("\n").trim()
-    : "";
 }
 
 function buildPrompt(dailyContent, date) {
@@ -82,7 +48,7 @@ if (!dailyPath) {
 
 const root = process.cwd();
 const dailyContent = await fs.readFile(path.resolve(root, dailyPath), "utf8");
-const output = await callModel(buildPrompt(dailyContent, date));
+const output = await callRunToken(buildPrompt(dailyContent, date));
 const runsDir = path.join(root, "automation", "runs");
 await fs.mkdir(runsDir, { recursive: true });
 await fs.writeFile(path.join(runsDir, `${date}.md`), output, "utf8");
