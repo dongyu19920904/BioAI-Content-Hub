@@ -37,10 +37,12 @@ jobs:
           for section in opportunity project-opportunity; do
             source="https://raw.githubusercontent.com/dongyu19920904/BioAI-Daily-Web/main/static/data/opportunities/${section}/${report_date}.json"
             input="automation/runs/inputs/${section}-${report_date}.json"
-            if curl --fail --silent --show-error --location --max-time 15 "$source" --output "$input"; then
+            if curl --fail --silent --show-error --location --max-time 15 --retry 2 --retry-delay 2 "$source" --output "$input"; then
               found=$((found + 1))
             else
+              rm -f -- "$input"
               echo "${section} ${report_date}: structured report unavailable; no draft invented"
+              echo "- ${section}：结构化日报缺失，未生成虚构内容。" >> "$GITHUB_STEP_SUMMARY"
             fi
           done
           for section in opportunity project-opportunity; do
@@ -55,10 +57,12 @@ jobs:
             fi
           done
           echo "Found ${found} structured report(s)"
-          if [[ "$found" -eq 0 ]]; then
-            echo "No public records yet; inspect upstream daily job or retry manually." >> "$GITHUB_STEP_SUMMARY"
+          if [[ "$found" -ne 2 ]]; then
+            echo "只取得 ${found}/2 份结构化日报；检查上游日报/自愈任务后再补跑。此运行不算成功。" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
           fi
       - name: Archive drafts as private workflow artifact, not as published media
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: evidence-drafts-${{ github.run_id }}
