@@ -58,4 +58,4 @@ node automation/loop/storyboard-to-hyperframes.mjs automation/runs/YYYY-MM-DD/op
 
 工作流在 PR 上只验收并保留短期未发布工件。合并到 `main` 后，完整复跑通过才会把固定版本的视频 `pyaging-public-video-v1` 幂等发布到本仓库 GitHub Release，作为第一条可回查的自有项目视频渠道；已存在的同名资产不会被悄悄覆盖。发布失败时不会留下“成功发布”的状态。B 站和公众号仍然是未授权、未发布，不能用 GitHub Release 代替它们的上传回执。
 
-`public-opportunity-feedback.yml` 定期将前端站点公开纠错 Issue 的机会编号计数、本仓库 pyaging 教程的公开复现反馈 Issue 数，以及两个固定版本视频资产的 GitHub Release `download_count` 分项目汇总到短期工件。只读标签、标题、状态和编号，不复制反馈正文或提交者；模板提醒不要公开个人健康数据。反馈条数不是文章阅读量、独立用户或需求规模；下载次数是资产请求计数，不是独立观众、实际观看或收入。
+`public-opportunity-feedback.yml` 定期将前端站点公开纠错 Issue 的机会编号计数、本仓库 pyaging 教程的公开复现反馈 Issue 数、公开仓库初筛申请的聚合条数，以及两个固定版本视频资产的 GitHub Release `download_count` 分项目汇总到短期工件。初筛申请只计有 `question` 标签且标题以 `[工具初筛]` 开头的 Issue；带 `automated-test` 标签的验收测试不计入申请数。仅以公开 Issue 正文判断是否填了格式合规的仓库首页 URL，不复制反馈正文、仓库名或提交者到报表；模板提醒不要公开个人健康数据。申请数不是独立客户、有效需求或订单，反馈条数不是文章阅读量；下载次数是资产请求计数，不是独立观众、实际观看或收入。
