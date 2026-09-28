@@ -1,0 +1,130 @@
+name: Chinese scAgeClock research video
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "automation/projects/scageclock_public_demo.py"
+      - "automation/projects/render_scageclock_video.py"
+      - "automation/loop/storyboard-to-hyperframes.mjs"
+      - ".github/workflows/scageclock-voiced-video.yml"
+  pull_request:
+    paths:
+      - "automation/projects/scageclock_public_demo.py"
+      - "automation/projects/render_scageclock_video.py"
+      - "automation/projects/test_render_scageclock_video.py"
+      - "automation/loop/storyboard-to-hyperframes.mjs"
+      - ".github/workflows/scageclock-voiced-video.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render-public-research-video:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PIP_NO_CACHE_DIR: "1"
+      OMP_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install open-source video tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq espeak-ng ffmpeg fonts-noto-cjk
+      - name: Fetch exact scAgeClock revision
+        run: |
+          git clone --filter=blob:none --no-checkout https://github.com/gangcai/scageclock.git upstream-scageclock
+          git -C upstream-scageclock fetch --depth=1 origin d4ce49daa85b959b537053f35e811017373ec096
+          git -C upstream-scageclock checkout --detach d4ce49daa85b959b537053f35e811017373ec096
+          test "$(git -C upstream-scageclock rev-parse HEAD)" = d4ce49daa85b959b537053f35e811017373ec096
+      - name: Install CPU research and Chinese voice dependencies
+        run: |
+          python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install ./upstream-scageclock kokoro==0.9.4 "misaki[zh]==0.9.4" soundfile==0.13.1
+      - name: Verify script, scientific limits, and storyboard renderer
+        run: |
+          python -m unittest discover -s automation/projects -p 'test_render_scageclock_video.py'
+          node --test automation/loop/storyboard-to-hyperframes.test.mjs
+      - name: Reproduce public aggregate and make narration, captions and storyboard
+        run: |
+          python automation/projects/scageclock_public_demo.py
+          python automation/projects/render_scageclock_video.py
+          node automation/loop/storyboard-to-hyperframes.mjs automation/runs/scageclock-public-video/storyboard.json
+      - name: Render visual and mux voice and burned-in captions
+        run: |
+          mv automation/runs/scageclock-public-video/narration.wav automation/runs/scageclock-public-demo/narration.wav
+          npx --yes hyperframes@0.8.78 lint automation/runs/scageclock-public-video
+          npx --yes hyperframes@0.8.78 check automation/runs/scageclock-public-video
+          npx --yes hyperframes@0.8.78 render automation/runs/scageclock-public-video --quality draft --fps 12 --output automation/runs/scageclock-public-video/visual.mp4
+          ffmpeg -hide_banner -loglevel error -y -i automation/runs/scageclock-public-video/visual.mp4 -i automation/runs/scageclock-public-demo/narration.wav -vf "subtitles=automation/runs/scageclock-public-video/subtitles.srt:force_style='FontName=Noto Sans CJK SC,FontSize=24'" -map 0:v:0 -map 1:a:0 -c:v libx264 -pix_fmt yuv420p -c:a aac -b:a 128k -shortest automation/runs/scageclock-public-video/unpublished-demo.mp4
+      - name: Verify playable streams and safe publishing pack
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          root = Path('automation/runs/scageclock-public-video')
+          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+          assert manifest['channel_status'] == 'not_published'
+          assert manifest['sample_count'] == 500
+          assert 15 < manifest['duration_seconds'] < 90
+          info = json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-show_streams', '-show_format', '-of', 'json', str(root / 'unpublished-demo.mp4')]))
+          assert {'video', 'audio'} <= {stream['codec_type'] for stream in info['streams']}
+          assert abs(float(info['format']['duration']) - manifest['duration_seconds']) < 1.5
+          assert (root / 'subtitles.srt').read_text(encoding='utf-8').count('-->') == 5
+          description = (root / 'bilibili-description.md').read_text(encoding='utf-8')
+          assert manifest['source'] in description and manifest['project_page'] in description
+          assert manifest['project_id'] in description and '非医疗建议' in description
+          print(json.dumps({'duration': info['format']['duration'], 'streams': [stream['codec_type'] for stream in info['streams']], 'channel_status': manifest['channel_status']}))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: unpublished-scageclock-voiced-video-${{ github.run_id }}
+          path: |
+            automation/runs/scageclock-public-video/unpublished-demo.mp4
+            automation/runs/scageclock-public-video/subtitles.srt
+            automation/runs/scageclock-public-video/bilibili-description.md
+            automation/runs/scageclock-public-video/manifest.json
+          retention-days: 3
+
+  publish-public-project-video:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: render-public-research-video
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: scageclock-public-video-v1
+      ASSET_NAME: scageclock-public-demo-zh.mp4
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: unpublished-scageclock-voiced-video-${{ github.run_id }}
+          path: release-input
+      - name: Publish once to this repository's release area
+        run: |
+          set -euo pipefail
+          test -s release-input/unpublished-demo.mp4
+          test -s release-input/manifest.json
+          grep -q '"channel_status": "not_published"' release-input/manifest.json
+          cp release-input/unpublished-demo.mp4 "release-input/$ASSET_NAME"
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fxq "$ASSET_NAME"; then
+              gh release upload "$RELEASE_TAG" "release-input/$ASSET_NAME" --repo "$GITHUB_REPOSITORY"
+            fi
+          else
+            gh release create "$RELEASE_TAG" "release-input/$ASSET_NAME" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "scAgeClock 公开样本中文演示 v1" --notes "基于原仓库公开的 500 细胞训练/验证示例；不是独立模型验证、个人寿命预测或医疗建议。源码：https://github.com/gangcai/scageclock/tree/d4ce49daa85b959b537053f35e811017373ec096；复现说明：https://life.aivora.cn/projects/scageclock-public-demo/ 。视频由本仓库通过测试的工作流生成。" --latest=false
+          fi
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fxq "$ASSET_NAME"
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json url,assets --jq '{url, assets: [.assets[].name]}'
