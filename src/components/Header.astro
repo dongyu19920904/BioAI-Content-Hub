@@ -27,7 +27,7 @@ const isActive = (path: string) => {
   href="#main-content"
   class="absolute start-16 -top-full z-50 bg-background px-3 py-2 text-accent backdrop-blur-lg transition-all focus:top-4"
 >
-  Skip to content
+  跳到正文
 </a>
 
 <header
@@ -55,7 +55,7 @@ const isActive = (path: string) => {
       <button
         id="menu-btn"
         class="focus-outline self-end p-2 sm:hidden"
-        aria-label="Open Menu"
+        aria-label="打开菜单"
         aria-expanded="false"
         aria-controls="menu-items"
       >
@@ -78,18 +78,18 @@ const isActive = (path: string) => {
         </li>
         <li class="col-span-2">
           <a
-            href="/resources"
-            class:list={{ "active-nav": isActive("/resources") }}
+            href="/projects/open-source-tools/"
+            class:list={{ "active-nav": isActive("/projects") }}
           >
-            资料包
+            工具
           </a>
         </li>
         <li class="col-span-2">
           <a
-            href="/projects"
-            class:list={{ "active-nav": isActive("/projects") }}
+            href="/services/repo-preflight/"
+            class:list={{ "active-nav": isActive("/services") }}
           >
-            链接
+            免费初筛
           </a>
         </li>
         <li class="col-span-2">

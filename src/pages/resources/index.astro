@@ -14,8 +14,14 @@ import { RESOURCE_PACKS } from "@/data/resourcePacks";
       </p>
       <h1 class="mt-3 text-3xl font-bold sm:text-4xl">AI 延续学资料包</h1>
       <p class="text-base-content/70 mt-4 max-w-3xl">
-        这里放的是可以从文章继续延伸出来的交付物：清单、模板、对比表、话术、工具导航和小产品说明书。先免费展示雏形，跑顺后再接
-        Aivora 小店发卡。
+        这是早期内容产品的历史构想，目前没有在本项目内出售或承诺交付。现阶段请从
+        <a class="text-accent underline" href="/projects/open-source-tools/"
+          >开源工具导航</a
+        >
+        和<a class="text-accent underline" href="/services/repo-preflight/"
+          >免费公开仓库初筛</a
+        >
+        开始；下面的卡片只供了解旧想法，不代表已验证用户需求。
       </p>
     </section>
 
@@ -45,10 +51,6 @@ import { RESOURCE_PACKS } from "@/data/resourcePacks";
                   ))}
                 </dd>
               </div>
-              <div>
-                <dt class="text-base-content font-semibold">价格测试</dt>
-                <dd class="text-base-content/70 mt-1">{pack.priceHint}</dd>
-              </div>
             </dl>
             <div class="mt-5 flex flex-wrap gap-3">
               {pack.relatedPost && (
@@ -59,14 +61,6 @@ import { RESOURCE_PACKS } from "@/data/resourcePacks";
                   查看相关文章
                 </a>
               )}
-              <a
-                class="text-sm font-semibold text-accent"
-                href="https://aivora.cn"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                后续在 Aivora 承接
-              </a>
             </div>
           </article>
         ))

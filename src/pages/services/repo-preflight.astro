@@ -1,0 +1,95 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+
+const requestUrl =
+  "https://github.com/dongyu19920904/BioAI-Content-Hub/issues/new?template=open-source-repo-preflight.yml";
+---
+
+<Layout
+  title="免费公开 GitHub 仓库初筛｜AI 生命科学开源工具"
+  description="提交公开 GitHub 仓库，自动查看维护状态、许可证、README 与资源线索，再决定是否值得做公开样本复现。"
+>
+  <Header />
+  <main id="main-content" class="app-layout mx-auto max-w-4xl px-4 py-10">
+    <p class="text-sm font-semibold tracking-wide text-accent">
+      免费公开服务 · 不用上传个人健康数据
+    </p>
+    <h1 class="mt-3 text-3xl font-bold sm:text-4xl">
+      想试一个生命科学开源工具？先查它能否继续评估
+    </h1>
+    <p class="text-base-content/75 mt-5 text-lg leading-8">
+      给出<strong>公开 GitHub 仓库首页</strong>，系统会在同一条 GitHub Issue
+      自动回复一份中文初筛，列出仓库是否归档、GitHub 识别的许可证、README
+      是否存在、最近代码推送与仓库大小。你可以据此决定下一步要读什么，再考虑公开样本试跑。
+    </p>
+    <div class="mt-7 flex flex-wrap gap-4">
+      <a
+        href={requestUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded-lg bg-accent px-5 py-3 font-semibold text-white hover:opacity-90"
+        >提交公开仓库，获取初筛 ↗</a
+      >
+      <a
+        href="/projects/open-source-tools/"
+        class="rounded-lg border border-border px-5 py-3 font-semibold text-accent hover:border-accent"
+        >先看已收录工具</a
+      >
+    </div>
+
+    <section class="mt-12 grid gap-4 sm:grid-cols-3" aria-label="服务流程">
+      <div class="bg-base-100 rounded-xl border border-border p-5">
+        <h2 class="text-lg font-semibold">1. 选公开仓库</h2>
+        <p class="text-base-content/70 mt-2 leading-7">
+          可先从本站工具导航挑一个，也可提交你找到的公开 GitHub 仓库。需要
+          GitHub 账号才能发起申请；Issue 和回复都是公开的。
+        </p>
+      </div>
+      <div class="bg-base-100 rounded-xl border border-border p-5">
+        <h2 class="text-lg font-semibold">2. 自动读取元数据</h2>
+        <p class="text-base-content/70 mt-2 leading-7">
+          GitHub Actions 只调用 GitHub 官方
+          API，不下载、不安装、不运行对方代码，也不调用付费 AI。
+        </p>
+      </div>
+      <div class="bg-base-100 rounded-xl border border-border p-5">
+        <h2 class="text-lg font-semibold">3. 决定是否试跑</h2>
+        <p class="text-base-content/70 mt-2 leading-7">
+          初筛会指出明显的许可或维护问题。真正复现还须有公开样本、固定版本、资源预算与隔离测试，不能从元数据直接跳到“已可用”。
+        </p>
+      </div>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold">已经验证过什么</h2>
+      <p class="text-base-content/70 mt-3 leading-7">
+        本站目前用公开样本实际跑过
+        <a class="text-accent underline" href="/projects/pyaging-public-demo/"
+          >pyaging</a
+        >
+        和
+        <a
+          class="text-accent underline"
+          href="/projects/scageclock-public-demo/">scAgeClock</a
+        >。 想从一篇可照做的中文教程开始，可先读
+        <a
+          class="text-accent underline"
+          href="/posts/pyaging-public-data-reproduction-guide/"
+          >pyaging 的 30 条公开样本复现与版本避坑记录</a
+        >。 这些是固定项目的已有试跑，不表示所有新申请都会自动获得试跑。
+      </p>
+    </section>
+
+    <aside
+      class="mt-10 rounded-xl border border-amber-400 bg-amber-50 p-5 text-sm leading-7 text-amber-950 dark:bg-amber-950 dark:text-amber-100"
+    >
+      <strong>请只提交公开软件问题。</strong
+      >不要提交私有仓库、体检单、逐人数据、密钥、邮箱或付款信息。初筛不等于安全审计、商用许可判断、科学结论、医学建议或部署承诺。GitHub
+      的任务调度可能延迟；若自动回复失败，该 Issue
+      会保留，我们会按真实失败原因修复。
+    </aside>
+  </main>
+  <Footer />
+</Layout>

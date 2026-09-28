@@ -1,0 +1,32 @@
+name: Public open-source repository preflight
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: repo-preflight-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    if: startsWith(github.event.issue.title, '[工具初筛]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Test the strict public-repository parser and report
+        run: node --test automation/services/repo-preflight.test.mjs
+      - name: Reply once with a metadata-only Chinese preflight
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node automation/services/repo-preflight.mjs

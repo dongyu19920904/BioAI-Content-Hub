@@ -45,15 +45,17 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
               <span class="sr-only">RSS Feed</span>
             </a>
           </div>
-          <p class="launchpad-tagline">从商机日报到文章、资料包和轻产品</p>
+          <p class="launchpad-tagline">
+            找开源工具，跑公开样本，读得懂失败原因
+          </p>
           <p class="launchpad-sub">
-            每天从 AI
-            延续学日报里筛一个可落地灵感，写成真正能帮人的内容，再沉淀成可售卖资料包。
+            这里记录 AI
+            衰老研究工具的真实试跑与中文教程。先用公开数据完成一次可核对的任务；找不到合适工具时，可以申请免费公开仓库初筛。
           </p>
           <div class="launchpad-chips">
-            <span class="launchpad-chip">Signal · 商机筛选</span>
-            <span class="launchpad-chip">Content · 文章生产</span>
-            <span class="launchpad-chip">Pack · 资料包交付</span>
+            <span class="launchpad-chip">选工具 · 输入与许可</span>
+            <span class="launchpad-chip">复现 · 公开样本</span>
+            <span class="launchpad-chip">反馈 · 修复步骤</span>
           </div>
         </div>
         <div
@@ -99,15 +101,13 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
       <div class="mt-6 grid gap-6 lg:grid-cols-[1.2fr_1fr]">
         <div class="text-base-content/80 space-y-3">
           <p class="text-lg text-foreground">
-            这里不是普通资讯站，而是 AI 延续学内容和资料包的实验仓库。
+            这里给中文研究者与开发者提供可核查的开源工具入口和复现记录。
           </p>
           <p>
-            核心流程是：<strong
-              >日报信号 → 商机判断 → 文章 → 资料包 → 变现测试</strong
-            >。 每篇内容都要回答一个问题：读者今天能用它做什么。
+            每个已试跑项目都应能看到公开输入、固定源码、实际运行结果和失败处理。仅收录的项目会明确标注未试跑，不把模型输出当个人寿命或医疗结论。
           </p>
           <p>
-            适合沉淀检测指标解释、可穿戴数据模板、论文项目复盘、家人沟通话术、工具导航和小产品说明书。
+            网站文章围绕“怎么用、怎么选、哪里会失败”来写，并链接到真实项目和公开纠错入口。访问量、使用需求和收费可行性都还要用真实数据检验。
           </p>
           {
             // only display if at least one social link is enabled
@@ -122,15 +122,16 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
         <div class="about-panel">
           <div class="about-row">
             <span class="about-label">正在做</span>
-            <span class="about-value">文章库 / 资料包 / 轻工具</span>
+            <span class="about-value">工具导航 / 公开样本试跑 / 实用文章</span>
           </div>
           <div class="about-row">
             <span class="about-label">航向</span>
-            <span class="about-value">AI 延续学内容产品化</span>
+            <span class="about-value">让更多人能核查并使用生命科学开源工具</span
+            >
           </div>
           <div class="about-row">
             <span class="about-label">目标</span>
-            <span class="about-value">每天从商机里做出一个可验证交付</span>
+            <span class="about-value">先验证用户任务、真实反馈和网站访问</span>
           </div>
         </div>
       </div>
