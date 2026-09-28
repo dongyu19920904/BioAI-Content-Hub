@@ -23,9 +23,9 @@
       "category": "单细胞时钟",
       "input_zh": "按项目格式准备的单细胞转录组 .h5ad 文件与模型权重",
       "output_zh": "细胞层面的模型年龄估计",
-      "start_zh": "先读原仓库 Quick Start；本站尚未试跑",
-      "demo_url": null,
-      "caution_zh": "需要研究数据和生信能力；尚未在本站复现。",
+      "start_zh": "本站已用原仓库公开的 500 细胞示例在 GitHub CPU 试跑；可一键复跑",
+      "demo_url": "/projects/scageclock-public-demo",
+      "caution_zh": "训练/验证示例的运行结果不是独立模型验证，也不能用于个人健康判断。",
       "github": {
         "url": "https://github.com/gangcai/scageclock",
         "license": "BSD-3-Clause",

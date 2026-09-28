@@ -36,8 +36,15 @@ export const NAV_LINKS: NavProject[] = [
     icon: "R",
   },
   {
+    title: "单细胞时钟公开样本试跑",
+    desc: "复用 scAgeClock 与上游公开 500 细胞示例，只公布聚合运行结果；不是个人检测。",
+    url: "/projects/scageclock-public-demo",
+    tag: "开源试跑",
+    icon: "C",
+  },
+  {
     title: "AI 延寿研究开源工具导航",
-    desc: "按研究输入筛选 6 个有仓库和许可证的工具，区分已试跑与仅收录。",
+    desc: "按研究输入筛选 6 个有仓库和许可证的工具，区分 2 个已试跑与仅收录。",
     url: "/projects/open-source-tools",
     tag: "工具导航",
     icon: "T",

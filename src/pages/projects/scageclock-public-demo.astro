@@ -1,0 +1,90 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+---
+
+<Layout>
+  <Header />
+  <main id="main-content" class="app-layout mx-auto max-w-4xl px-4 py-10">
+    <p class="text-sm font-semibold tracking-wide text-accent">
+      第二个开源项目真实试跑 · 公开研究样本
+    </p>
+    <h1 class="mt-3 text-3xl font-bold sm:text-4xl">
+      用 scAgeClock 运行单细胞时钟示例
+    </h1>
+    <p class="text-base-content/70 mt-5 leading-7">
+      这里直接复用 <a
+        class="text-accent underline"
+        href="https://github.com/gangcai/scageclock/tree/d4ce49daa85b959b537053f35e811017373ec096"
+        target="_blank"
+        rel="noopener noreferrer">scAgeClock 的固定版本</a
+      >和作者仓库里的公开示例，不上传个人化验或健康数据。项目采用 BSD-3-Clause
+      许可证； 本站只复现软件运行，没有验证模型适用于一般人群或任何医疗用途。
+    </p>
+
+    <section class="bg-base-100 mt-8 rounded-xl border border-border p-6">
+      <h2 class="text-xl font-semibold">这次实际跑出了什么</h2>
+      <p class="text-base-content/70 mt-3 leading-7">
+        2026-09-28 的 <a
+          class="text-accent underline"
+          href="https://github.com/dongyu19920904/BioAI-Content-Hub/actions/runs/36379154517"
+          target="_blank"
+          rel="noopener noreferrer">GitHub Actions 运行记录</a
+        >显示：软件在托管 CPU 上安装成功，对原仓库的 500
+        个公开细胞示例完成推理；只导出汇总 JSON， 模型输出中位数为 <strong
+          >66.14</strong
+        >。这批数据来自原仓库的训练/验证示例，
+        <strong>不是独立测试集</strong
+        >；该数值既不是某个人的生物年龄，也不意味着延寿效果。
+      </p>
+      <p class="text-base-content/70 mt-4 text-sm">
+        固定源码提交：<code>d4ce49d</code>。<a
+          class="text-accent underline"
+          href="https://github.com/dongyu19920904/BioAI-Content-Hub/blob/main/automation/projects/scageclock_public_demo.py"
+          target="_blank"
+          rel="noopener noreferrer">查看本站试跑脚本</a
+        >；脚本不保存逐细胞编号、预测行或原始输入文件。
+      </p>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="text-xl font-semibold">新手如何复跑</h2>
+      <ol class="mt-4 list-decimal space-y-3 pl-6 leading-7">
+        <li>
+          登录 GitHub，打开<a
+            class="text-accent underline"
+            href="https://github.com/dongyu19920904/BioAI-Content-Hub/actions/workflows/scageclock-public-demo.yml"
+            target="_blank"
+            rel="noopener noreferrer">公开样本自动任务</a
+          >。
+        </li>
+        <li>
+          点击 “Run workflow”（运行工作流）；不要上传自己的检测或健康数据。
+        </li>
+        <li>
+          等运行显示绿色勾，再到页面底部下载 <code
+            >scageclock-public-summary</code
+          >
+          聚合结果。红色叉说明本次失败，不应把它当作科研结论。
+        </li>
+      </ol>
+      <p class="mt-5">
+        <a
+          class="text-accent underline"
+          href="https://github.com/dongyu19920904/BioAI-Content-Hub/blob/main/docs/projects/scageclock-public-demo.md"
+          target="_blank"
+          rel="noopener noreferrer">查看中文复现说明与局限</a
+        >
+      </p>
+    </section>
+
+    <aside
+      class="mt-10 rounded-xl border border-amber-400 bg-amber-50 p-5 text-sm leading-6 text-amber-950 dark:bg-amber-950 dark:text-amber-100"
+    >
+      <strong>边界：</strong> 这是开源研究软件的运行验证，不是临床验证、个人寿命预测或医疗建议。
+      未核实真实用户需求、商业可行性或收入。若原仓库输入格式、模型或依赖发生变化，应重新试跑并更新记录。
+    </aside>
+  </main>
+  <Footer />
+</Layout>
