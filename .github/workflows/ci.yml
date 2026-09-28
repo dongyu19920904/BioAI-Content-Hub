@@ -46,6 +46,9 @@ jobs:
       - name: "Check public repository preflight safety and idempotency"
         run: node --test automation/services/repo-preflight.test.mjs
 
+      - name: "Check no-login browser repository preflight"
+        run: node --test src/scripts/repoQuickCheck.test.mjs
+
       - name: "📝 Checking code format"
         run: pnpm run format:check
 

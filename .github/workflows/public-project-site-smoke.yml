@@ -46,6 +46,9 @@ jobs:
           grep -Fq '/services/repo-preflight/' choice-page.html
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$service_page" --output service-page.html
           grep -Fq '想试一个生命科学开源工具' service-page.html
+          grep -Fq 'id="repo-quick-check"' service-page.html
+          grep -Fq '先在本页免费查一次，无需登录' service-page.html
+          grep -Fq 'repo-preflight.astro_astro_type_script' service-page.html
           grep -Fq 'open-source-repo-preflight.yml' service-page.html
           grep -Fq '没有下载或运行' service-page.html || grep -Fq '不下载、不安装、不运行' service-page.html
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 'https://life.aivora.cn/rss.xml' --output rss.xml
