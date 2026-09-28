@@ -1,0 +1,35 @@
+name: 公开开源工具初筛申请
+description: 只提交公开 GitHub 仓库，自动得到元数据初筛；不会运行陌生代码或提供医疗判断
+title: "[工具初筛] "
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        这是公开 Issue，任何人都能看到。系统只读取公开仓库的状态、GitHub 识别的许可证和 README，并在本 Issue 自动回复一次。请勿提交体检单、逐人健康数据、邮箱、密钥、私有仓库地址或付款信息。初筛不代表软件已跑通。
+  - type: input
+    id: public_repo
+    attributes:
+      label: 公开 GitHub 仓库 URL
+      description: 只填仓库首页，例如 https://github.com/lucascamillomd/pyaging
+      placeholder: https://github.com/owner/repository
+    validations:
+      required: true
+  - type: dropdown
+    id: goal
+    attributes:
+      label: 你最想解决什么问题
+      options:
+        - 想知道项目是否适合继续试跑
+        - 想找到公开样本和复现步骤
+        - 想理解许可证或运行资源要求
+        - 已经试跑但遇到报错
+    validations:
+      required: true
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: 公开信息确认
+      options:
+        - label: 我只提交公开仓库和公开软件问题，不提交个人健康资料、密钥或付款信息
+          required: true

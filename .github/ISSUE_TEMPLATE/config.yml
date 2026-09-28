@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: AstroPaper Discussions
-    url: https://github.com/satnaing/astro-paper/discussions
-    about: Please ask and answer questions here.
+  - name: 先看本站开源工具导航
+    url: https://life.aivora.cn/projects/open-source-tools/
+    about: 先按研究输入筛选，区分本站已试跑和仅收录的工具。

@@ -43,6 +43,9 @@ jobs:
       - name: "🔎 Lint code"
         run: pnpm run lint
 
+      - name: "Check public repository preflight safety and idempotency"
+        run: node --test automation/services/repo-preflight.test.mjs
+
       - name: "📝 Checking code format"
         run: pnpm run format:check
 

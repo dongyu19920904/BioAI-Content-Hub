@@ -11,7 +11,10 @@ const categories = [
 const observedDate = catalog.observed_at.slice(0, 10);
 ---
 
-<Layout>
+<Layout
+  title="AI 延寿研究开源工具导航｜按输入和试跑状态筛选"
+  description="按研究输入、输出和许可证筛选生命科学开源工具，区分本站已用公开样本试跑与仅收录的项目。"
+>
   <Header />
   <main id="main-content" class="app-layout mx-auto max-w-5xl px-4 py-10">
     <p class="text-sm font-semibold tracking-wide text-accent">
@@ -26,6 +29,13 @@ const observedDate = catalog.observed_at.slice(0, 10);
     <p class="text-base-content/60 mt-3 text-sm">
       GitHub 元数据核查日期：<time datetime={observedDate}>{observedDate}</time
       >。 定时刷新可能因 GitHub 接口不可用而延迟；请以原仓库为准。
+    </p>
+    <p class="mt-5">
+      <a
+        class="font-semibold text-accent underline"
+        href="/services/repo-preflight/"
+        >列表里没有你要试的公开项目？申请免费仓库初筛 →</a
+      >
     </p>
 
     <section
