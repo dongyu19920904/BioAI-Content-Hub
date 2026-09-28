@@ -1,0 +1,62 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE } from "@/config";
+
+const publicReportUrl = SITE.analytics.publicReportUrl.startsWith("https://")
+  ? SITE.analytics.publicReportUrl
+  : "";
+---
+
+<Layout
+  title="流量统计说明"
+  description="查看本站公开流量计数与统计口径，了解哪些数据尚未公开或不能代表真实用户。"
+>
+  <Header />
+  <main id="main-content" class="app-layout mx-auto max-w-3xl px-4 py-10">
+    <h1 class="text-3xl font-bold">流量统计说明</h1>
+    <p class="text-base-content/70 mt-5 leading-7">
+      本站已在共同页面布局中加载一次 51.LA
+      统计脚本，所有使用该布局的文章、工具页和服务页都会带上同一站点的统计代码。<a
+        class="text-accent underline"
+        href="#public-traffic-counter">页脚有服务商提供的公开计数挂件</a
+      >，不是我们手填的数字。
+    </p>
+    <ul class="text-base-content/70 mt-5 list-disc space-y-3 pl-6 leading-7">
+      <li>
+        公开挂件显示的是站点级计数，不能由它推断某篇文章的访客数、搜索来源或服务转化。
+      </li>
+      <li>
+        自己的检查访问、自动化浏览器、广告拦截和统计脚本加载失败都会影响统计口径。页面可打开也不等于有人使用。
+      </li>
+      <li>
+        公开仓库初筛的申请数单独来自 GitHub
+        Issue；阅读数、申请数、实际客户和收入是四种不同数据。
+      </li>
+      <li>
+        本站不要求访客上传个人健康资料；请勿在公开反馈、URL
+        参数或统计事件中放入体检、邮箱、密钥和付款信息。
+      </li>
+    </ul>
+    {
+      publicReportUrl ? (
+        <p class="mt-7">
+          <a
+            class="text-accent underline"
+            href={publicReportUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            查看 51.LA 只读详细报表
+          </a>
+        </p>
+      ) : (
+        <p class="bg-base-100 mt-7 rounded-xl border border-border p-5 text-sm leading-6">
+          文章级访问与来源报表还没有公开分享链接。目前只能查看下方的站点级挂件，不能把它当作已验证的流量增长。
+        </p>
+      )
+    }
+  </main>
+  <Footer />
+</Layout>
