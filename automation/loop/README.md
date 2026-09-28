@@ -58,4 +58,4 @@ node automation/loop/storyboard-to-hyperframes.mjs automation/runs/YYYY-MM-DD/op
 
 工作流在 PR 上只验收并保留短期未发布工件。合并到 `main` 后，完整复跑通过才会把固定版本的视频 `pyaging-public-video-v1` 幂等发布到本仓库 GitHub Release，作为第一条可回查的自有项目视频渠道；已存在的同名资产不会被悄悄覆盖。发布失败时不会留下“成功发布”的状态。B 站和公众号仍然是未授权、未发布，不能用 GitHub Release 代替它们的上传回执。
 
-`public-opportunity-feedback.yml` 定期将前端站点公开纠错 Issue 的机会编号计数与本仓库固定版本视频资产的 GitHub Release `download_count` 汇总到短期工件。下载次数是资产请求计数，不是独立观众、实际观看、用户需求或收入；没有订单数据时不得据此推断利润。
+`public-opportunity-feedback.yml` 定期将前端站点公开纠错 Issue 的机会编号计数与本仓库 pyaging、scAgeClock 两个固定版本视频资产的 GitHub Release `download_count` 分项目汇总到短期工件。下载次数是资产请求计数，不是独立观众、实际观看、用户需求或收入；没有订单数据时不得据此推断利润。

@@ -5,18 +5,27 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
 const source = "https://api.github.com/repos/dongyu19920904/BioAI-Daily-Web/issues";
-const releaseSource = "https://api.github.com/repos/dongyu19920904/BioAI-Content-Hub/releases/tags/pyaging-public-video-v1";
+const releaseApi = "https://api.github.com/repos/dongyu19920904/BioAI-Content-Hub/releases/tags/";
+const releasePage = "https://github.com/dongyu19920904/BioAI-Content-Hub/releases/";
+const publishedProjects = [
+  { projectId: "project_c0f43537a4a2f2df", tag: "pyaging-public-video-v1", assetName: "pyaging-public-demo-zh.mp4" },
+  { projectId: "project_79a96a9435e2033c", tag: "scageclock-public-video-v1", assetName: "scageclock-public-demo-zh.mp4" },
+];
 const opportunityPattern = /^\[机会反馈\]\s+(opp_[a-f0-9]{16})(?:\b|$)/;
 
-export function summarizeProjectDownloads(release) {
-  if (release?.tag_name !== "pyaging-public-video-v1" || release.html_url !== "https://github.com/dongyu19920904/BioAI-Content-Hub/releases/tag/pyaging-public-video-v1") {
-    throw new Error("Unexpected project release identity");
-  }
-  const asset = release.assets?.find((item) => item.name === "pyaging-public-demo-zh.mp4" && item.state === "uploaded");
-  if (!asset || !Number.isSafeInteger(asset.download_count) || asset.download_count < 0 || asset.browser_download_url !== "https://github.com/dongyu19920904/BioAI-Content-Hub/releases/download/pyaging-public-video-v1/pyaging-public-demo-zh.mp4") {
-    throw new Error("Missing or invalid public video download count");
-  }
-  return [{ project_id: "project_c0f43537a4a2f2df", release_url: release.html_url, asset_url: asset.browser_download_url, asset_download_count: asset.download_count, metric_scope: "asset_downloads_not_unique_people_or_plays" }];
+export function summarizeProjectDownloads(releases) {
+  if (!Array.isArray(releases) || releases.length !== publishedProjects.length) throw new Error("Unexpected number of project releases");
+  const byTag = new Map(releases.map((release) => [release?.tag_name, release]));
+  if (byTag.size !== publishedProjects.length) throw new Error("Duplicate project release");
+  return publishedProjects.map(({ projectId, tag, assetName }) => {
+    const release = byTag.get(tag);
+    if (release?.html_url !== `${releasePage}tag/${tag}`) throw new Error("Unexpected project release identity");
+    const asset = release.assets?.find((item) => item.name === assetName && item.state === "uploaded");
+    if (!asset || !Number.isSafeInteger(asset.download_count) || asset.download_count < 0 || asset.browser_download_url !== `${releasePage}download/${tag}/${assetName}`) {
+      throw new Error("Missing or invalid public video download count");
+    }
+    return { project_id: projectId, release_url: release.html_url, asset_url: asset.browser_download_url, asset_download_count: asset.download_count, metric_scope: "asset_downloads_not_unique_people_or_plays" };
+  });
 }
 
 /** Public issue counts are unverified reports, never user or revenue measurements. */
@@ -65,24 +74,26 @@ async function fetchIssues(fetcher = fetch) {
   return issues;
 }
 
-async function fetchProjectRelease(fetcher = fetch) {
+async function fetchProjectReleases(fetcher = fetch) {
   const token = process.env.GITHUB_TOKEN;
-  const response = await fetcher(releaseSource, {
-    signal: AbortSignal.timeout(10_000),
-    redirect: "error",
-    headers: {
-      Accept: "application/vnd.github+json",
-      "User-Agent": "BioAI-Content-Hub/1.0",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
-  if (!response.ok) throw new Error(`GitHub release API failed: HTTP ${response.status}`);
-  return response.json();
+  return Promise.all(publishedProjects.map(async ({ tag }) => {
+    const response = await fetcher(`${releaseApi}${tag}`, {
+      signal: AbortSignal.timeout(10_000),
+      redirect: "error",
+      headers: {
+        Accept: "application/vnd.github+json",
+        "User-Agent": "BioAI-Content-Hub/1.0",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+    if (!response.ok) throw new Error(`GitHub release API failed for ${tag}: HTTP ${response.status}`);
+    return response.json();
+  }));
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const [issues, release] = await Promise.all([fetchIssues(), fetchProjectRelease()]);
-  const report = summarizePublicFeedback(issues, new Date().toISOString(), summarizeProjectDownloads(release));
+  const [issues, releases] = await Promise.all([fetchIssues(), fetchProjectReleases()]);
+  const report = summarizePublicFeedback(issues, new Date().toISOString(), summarizeProjectDownloads(releases));
   const output = path.join(root, "automation/runs/feedback/public-issue-summary.json");
   await mkdir(path.dirname(output), { recursive: true });
   await writeFile(output, `${JSON.stringify(report, null, 2)}\n`, "utf8");
