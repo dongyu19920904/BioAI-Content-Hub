@@ -33,6 +33,8 @@ export const SITE = {
   analytics: {
     la51Id: "3PMbujTBSvRv3c5i",
     hashMode: false,
+    // 51.LA 后台创建的只读报表分享链接；没有链接前不显示报表按钮。
+    publicReportUrl: "",
   },
   dir: "ltr",
   lang: "zh-CN", // 中文站点

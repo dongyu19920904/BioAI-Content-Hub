@@ -27,6 +27,7 @@ jobs:
           choice_page='https://life.aivora.cn/posts/pyaging-vs-scageclock-input-choice/'
           service_page='https://life.aivora.cn/services/repo-preflight/'
           tools_page='https://life.aivora.cn/projects/open-source-tools/'
+          stats_page='https://life.aivora.cn/stats/'
           video='https://github.com/dongyu19920904/BioAI-Content-Hub/releases/download/pyaging-public-video-v1/pyaging-public-demo-zh.mp4'
           scageclock_video='https://github.com/dongyu19920904/BioAI-Content-Hub/releases/download/scageclock-public-video-v1/scageclock-public-demo-zh.mp4'
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$page" --output page.html
@@ -63,6 +64,11 @@ jobs:
           grep -Fq '/projects/scageclock-public-demo' tools-page.html
           grep -Fq '尚未试跑' tools-page.html
           grep -Fq '/services/repo-preflight/' tools-page.html
+          curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$stats_page" --output stats-page.html
+          grep -Fq '流量统计说明' stats-page.html
+          grep -Fq '51.LA' stats-page.html
+          grep -Fq 'LA-DATA-WIDGET' stats-page.html
+          grep -Fq '文章级访问与来源报表还没有公开分享链接' stats-page.html
           code="$(curl --silent --show-error --location --head --connect-timeout 10 --max-time 25 --output /dev/null --write-out '%{http_code}' "$video")"
           test "$code" = '200'
           scageclock_code="$(curl --silent --show-error --location --head --connect-timeout 10 --max-time 25 --output /dev/null --write-out '%{http_code}' "$scageclock_video")"

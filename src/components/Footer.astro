@@ -37,6 +37,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
       <a href="/archives" class="transition hover:text-accent">归档</a>
       <a href="/tags" class="transition hover:text-accent">标签</a>
       <a href="/about" class="transition hover:text-accent">关于</a>
+      <a href="/stats/" class="transition hover:text-accent">流量说明</a>
       <a href="https://news.aivora.cn" class="transition hover:text-accent"
         >AI 日报</a
       >
@@ -54,7 +55,10 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
 </footer>
 {
   SITE.analytics.la51Id && (
-    <div style="max-width: 900px; margin: 1rem auto 2rem; padding: 0 1rem; text-align: center;">
+    <div
+      id="public-traffic-counter"
+      style="max-width: 900px; margin: 1rem auto 2rem; padding: 0 1rem; text-align: center;"
+    >
       <script
         is:inline
         id="LA-DATA-WIDGET"
