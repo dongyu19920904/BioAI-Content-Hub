@@ -15,7 +15,7 @@ export const SITE = {
   // ===== 👇 修改这里的个人信息 =====
   author: "yuyu", // 你的名字
   profile: "https://yuyu.aivora.cn/about", // 个人简介页面
-  desc: "AI 延续学内容库：把每日商机灵感做成可阅读、可下载、可变现的文章和资料包", // 站点描述
+  desc: "AI 生命延续学实用内容：公开样本复现、开源工具避坑与可核查的研究资料", // 站点描述
   title: "AI 延续学内容库", // 站点标题
   ogImage: "og-image.png", // 默认 OG 图片
   lightAndDarkMode: true,

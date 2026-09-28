@@ -75,12 +75,20 @@ import Footer from "@/components/Footer.astro";
       <h2 class="text-xl font-semibold">新手如何复跑</h2>
       <ol class="mt-4 list-decimal space-y-3 pl-6 leading-7">
         <li>
-          登录 GitHub，打开<a
+          登录 GitHub，先把<a
+            class="text-accent underline"
+            href="https://github.com/dongyu19920904/BioAI-Content-Hub"
+            target="_blank"
+            rel="noopener noreferrer">公开仓库 Fork 到自己的账号</a
+          >；访客没有原仓库的手动运行权限。
+        </li>
+        <li>
+          在自己的 Fork 中启用 Actions，参考<a
             class="text-accent underline"
             href="https://github.com/dongyu19920904/BioAI-Content-Hub/actions/workflows/scageclock-public-demo.yml"
             target="_blank"
-            rel="noopener noreferrer">公开样本自动任务</a
-          >。
+            rel="noopener noreferrer">原仓库的自动任务</a
+          >名称，在自己的 Fork 中选择同名任务。
         </li>
         <li>
           点击 “Run workflow”（运行工作流）；不要上传自己的检测或健康数据。
