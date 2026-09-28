@@ -24,6 +24,7 @@ jobs:
           page='https://life.aivora.cn/projects/pyaging-public-demo/'
           scageclock_page='https://life.aivora.cn/projects/scageclock-public-demo/'
           guide_page='https://life.aivora.cn/posts/pyaging-public-data-reproduction-guide/'
+          choice_page='https://life.aivora.cn/posts/pyaging-vs-scageclock-input-choice/'
           service_page='https://life.aivora.cn/services/repo-preflight/'
           tools_page='https://life.aivora.cn/projects/open-source-tools/'
           video='https://github.com/dongyu19920904/BioAI-Content-Hub/releases/download/pyaging-public-video-v1/pyaging-public-demo-zh.mp4'
@@ -38,18 +39,24 @@ jobs:
           grep -Fq 'v0.5.1' guide-page.html
           grep -Fq 'Fork' guide-page.html
           grep -Fq 'article-reproduction-feedback.md' guide-page.html
+          curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$choice_page" --output choice-page.html
+          grep -Fq '血液化学数据还是单细胞数据' choice-page.html
+          grep -Fq '36379154517' choice-page.html
+          grep -Fq '/services/repo-preflight/' choice-page.html
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$service_page" --output service-page.html
           grep -Fq '想试一个生命科学开源工具' service-page.html
           grep -Fq 'open-source-repo-preflight.yml' service-page.html
           grep -Fq '没有下载或运行' service-page.html || grep -Fq '不下载、不安装、不运行' service-page.html
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 'https://life.aivora.cn/rss.xml' --output rss.xml
           grep -Fq '/posts/pyaging-public-data-reproduction-guide/' rss.xml
+          grep -Fq '/posts/pyaging-vs-scageclock-input-choice/' rss.xml
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$scageclock_page" --output scageclock-page.html
           grep -Fq '单细胞时钟示例' scageclock-page.html
           grep -Fq '36379154517' scageclock-page.html
           grep -Fq '不是独立测试集' scageclock-page.html
           grep -Fq '下载中文演示视频 MP4' scageclock-page.html
           grep -Fq 'scageclock-public-video-v1' scageclock-page.html
+          grep -Fq '/posts/pyaging-vs-scageclock-input-choice/' scageclock-page.html
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$tools_page" --output tools-page.html
           grep -Fq 'AI 延寿研究开源工具导航' tools-page.html
           grep -Fq 'gangcai/scageclock' tools-page.html
