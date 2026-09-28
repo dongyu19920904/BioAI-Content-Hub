@@ -36,6 +36,7 @@ jobs:
           grep -Fq '36233207115' guide-page.html
           grep -Fq 'v0.5.1' guide-page.html
           grep -Fq 'Fork' guide-page.html
+          grep -Fq 'article-reproduction-feedback.md' guide-page.html
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 'https://life.aivora.cn/rss.xml' --output rss.xml
           grep -Fq '/posts/pyaging-public-data-reproduction-guide/' rss.xml
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$scageclock_page" --output scageclock-page.html
