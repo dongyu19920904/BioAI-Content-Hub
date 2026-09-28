@@ -1,0 +1,57 @@
+name: Public-data scAgeClock project demo
+
+on:
+  pull_request:
+    paths:
+      - "automation/projects/scageclock_public_demo.py"
+      - "automation/projects/test_scageclock_public_demo.py"
+      - ".github/workflows/scageclock-public-demo.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-public-example:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      PIP_NO_CACHE_DIR: "1"
+      OMP_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test privacy-preserving aggregation
+        run: python -m unittest discover -s automation/projects -p 'test_scageclock_public_demo.py'
+      - name: Fetch the exact open-source revision and public sample
+        run: |
+          git clone --filter=blob:none --no-checkout https://github.com/gangcai/scageclock.git upstream-scageclock
+          git -C upstream-scageclock fetch --depth=1 origin d4ce49daa85b959b537053f35e811017373ec096
+          git -C upstream-scageclock checkout --detach d4ce49daa85b959b537053f35e811017373ec096
+          test "$(git -C upstream-scageclock rev-parse HEAD)" = d4ce49daa85b959b537053f35e811017373ec096
+      - name: Install upstream research software on CPU only
+        run: |
+          python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install ./upstream-scageclock
+      - name: Run example and keep only aggregate output
+        run: python automation/projects/scageclock_public_demo.py
+      - name: Check artifact contains no per-cell values
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path('automation/runs/scageclock-public-demo/summary.json').read_text(encoding='utf-8'))
+          assert result['sample_cell_count'] == 500
+          assert isinstance(result['median_model_output'], (int, float))
+          assert 'cell_id' not in result and 'cell_age_predicted' not in result
+          assert len(result) == 7
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scageclock-public-summary-${{ github.run_id }}
+          path: automation/runs/scageclock-public-demo/summary.json
+          retention-days: 7
