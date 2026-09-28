@@ -46,7 +46,23 @@ import Footer from "@/components/Footer.astro";
     </section>
 
     <section class="bg-base-100 mt-8 rounded-xl border border-border p-6">
-      <h2 class="text-xl font-semibold">中文视频：公开样本的软件演示</h2>
+      <h2 class="text-xl font-semibold">先读中文复现指南</h2>
+      <p class="text-base-content/70 mt-3 leading-7">
+        文章给出三次真实运行记录、数据和权重版本不匹配的原因，以及没有仓库写入权限时如何在自己的
+        Fork 复跑。不需要上传体检或化验数据。
+      </p>
+      <p class="mt-4">
+        <a
+          class="text-accent underline"
+          href="/posts/pyaging-public-data-reproduction-guide/"
+        >
+          阅读 pyaging 公开样本实测与复现指南
+        </a>
+      </p>
+    </section>
+
+    <section class="bg-base-100 mt-8 rounded-xl border border-border p-6">
+      <h2 class="text-xl font-semibold">早期视频试验</h2>
       <p class="text-base-content/70 mt-3 leading-7">
         这段约 47
         秒的视频由同一份公开样本结果自动生成，附中文配音和字幕。它解释工具能做什么、不能证明什么；不是个人寿命预测或医疗建议。程序已验证音视频流、字幕、来源说明和时长，但尚未由人评定表达质量。视频目前由
@@ -74,12 +90,20 @@ import Footer from "@/components/Footer.astro";
       <h2 class="text-xl font-semibold">新手如何自己复跑</h2>
       <ol class="mt-4 list-decimal space-y-3 pl-6 leading-7">
         <li>
-          打开<a
+          先将<a
+            class="text-accent underline"
+            href="https://github.com/dongyu19920904/BioAI-Content-Hub"
+            target="_blank"
+            rel="noopener noreferrer">公开仓库 Fork 到自己的 GitHub 账号</a
+          >。仅登录后打开原仓库没有手动运行权限。
+        </li>
+        <li>
+          在自己的 Fork 中启用 Actions，再打开<a
             class="text-accent underline"
             href="https://github.com/dongyu19920904/BioAI-Content-Hub/actions/workflows/pyaging-public-demo.yml"
             target="_blank"
-            rel="noopener noreferrer">这个自动任务页面</a
-          >并登录 GitHub。
+            rel="noopener noreferrer">原仓库任务名称与说明</a
+          >，在自己的 Fork 左侧选择同名任务。
         </li>
         <li>
           点击右侧 “Run workflow”（运行工作流）；不用上传自己的体检或化验数据。

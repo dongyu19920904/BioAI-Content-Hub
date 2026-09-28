@@ -10,7 +10,7 @@
 
 ## 如何复跑
 
-在本仓库的 [Public-data scAgeClock project demo](https://github.com/dongyu19920904/BioAI-Content-Hub/actions/workflows/scageclock-public-demo.yml) 页面点击 “Run workflow”。工作流会临时下载固定提交的上游仓库，安装 CPU 依赖，运行 [脚本](../../automation/projects/scageclock_public_demo.py)，并保留 7 天的 `summary.json` 工件。无需提供模型 Key、上传自己的数据或使用自有服务器。
+访客先将本仓库 Fork 到自己的 GitHub 账号，在 Fork 中启用 Actions，然后找到同名的 [Public-data scAgeClock project demo](https://github.com/dongyu19920904/BioAI-Content-Hub/actions/workflows/scageclock-public-demo.yml) 任务并点击 “Run workflow”。在原仓库手动运行需要写入权限，仅登录 GitHub 不够。工作流会临时下载固定提交的上游仓库，安装 CPU 依赖，运行 [脚本](../../automation/projects/scageclock_public_demo.py)，并保留 7 天的 `summary.json` 工件。无需提供模型 Key、上传自己的数据或使用自有服务器。
 
 上游样本位于 `data/pytest_data/k_fold_mode/train_val/Fold1/`，模型位于 `data/trained_models/`。示例本身来自训练/验证目录，因此不能用运行成功或这个数值推断泛化性能。工作流不会把逐细胞预测或输入数据上传为本站工件；仅返回七项元数据/聚合结果。上游模型文件使用 PyTorch 权重格式，因此仅在无持久凭据的临时 GitHub 运行器执行指定提交，不在用户电脑或带生产密钥的服务器运行。
 

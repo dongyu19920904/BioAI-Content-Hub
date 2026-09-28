@@ -23,12 +23,21 @@ jobs:
           set -euo pipefail
           page='https://life.aivora.cn/projects/pyaging-public-demo/'
           scageclock_page='https://life.aivora.cn/projects/scageclock-public-demo/'
+          guide_page='https://life.aivora.cn/posts/pyaging-public-data-reproduction-guide/'
           tools_page='https://life.aivora.cn/projects/open-source-tools/'
           video='https://github.com/dongyu19920904/BioAI-Content-Hub/releases/download/pyaging-public-video-v1/pyaging-public-demo-zh.mp4'
           scageclock_video='https://github.com/dongyu19920904/BioAI-Content-Hub/releases/download/scageclock-public-video-v1/scageclock-public-demo-zh.mp4'
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$page" --output page.html
           grep -Fq 'pyaging-public-video-v1' page.html
           grep -Fq '下载中文演示视频' page.html
+          grep -Fq '/posts/pyaging-public-data-reproduction-guide/' page.html
+          curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$guide_page" --output guide-page.html
+          grep -Fq 'pyaging 生物年龄时钟公开样本实测与复现指南' guide-page.html
+          grep -Fq '36233207115' guide-page.html
+          grep -Fq 'v0.5.1' guide-page.html
+          grep -Fq 'Fork' guide-page.html
+          curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 'https://life.aivora.cn/rss.xml' --output rss.xml
+          grep -Fq '/posts/pyaging-public-data-reproduction-guide/' rss.xml
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$scageclock_page" --output scageclock-page.html
           grep -Fq '单细胞时钟示例' scageclock-page.html
           grep -Fq '36379154517' scageclock-page.html
@@ -44,7 +53,7 @@ jobs:
           test "$code" = '200'
           scageclock_code="$(curl --silent --show-error --location --head --connect-timeout 10 --max-time 25 --output /dev/null --write-out '%{http_code}' "$scageclock_video")"
           test "$scageclock_code" = '200'
-          echo "Both tested project pages, the curated directory, and both public videos are reachable. Video HEAD HTTP $code / $scageclock_code." >> "$GITHUB_STEP_SUMMARY"
+          echo "Both tested project pages, the useful guide and RSS, the curated directory, and both legacy public videos are reachable. Video HEAD HTTP $code / $scageclock_code." >> "$GITHUB_STEP_SUMMARY"
       - name: Explain a failed website check without changing publication status
         if: failure()
         run: echo 'Public project page or video could not be independently reached from GitHub runner; inspect DNS, HTTPS and Pages. A successful deployment receipt alone is insufficient.' >> "$GITHUB_STEP_SUMMARY"
