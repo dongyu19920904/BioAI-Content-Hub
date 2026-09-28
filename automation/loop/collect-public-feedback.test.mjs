@@ -23,9 +23,22 @@ test("counts only the published article's reproduction reports without copying p
     { number: 11, title: "[文章复现反馈] pyaging-public-data-reproduction-guide PR", state: "open", labels: [{ name: "documentation" }], pull_request: {} },
   ];
   const report = summarizePublicFeedback([], "2026-09-29T00:00:00Z", [], articleIssues);
-  assert.equal(report.schema_version, 2);
+  assert.equal(report.schema_version, 3);
   assert.deepEqual(report.articles, [{ article_slug: "pyaging-public-data-reproduction-guide", reported_issue_count: 2, open_issue_count: 1, closed_issue_count: 1 }]);
   assert.doesNotMatch(JSON.stringify(report), /private health details|private-user/);
+});
+
+test("counts only non-test public service requests and valid repository URLs", () => {
+  const serviceIssues = [
+    { number: 26, title: "[工具初筛] 自动化验收测试", state: "closed", labels: [{ name: "question" }, { name: "automated-test" }], body: "### 公开 GitHub 仓库 URL\n\nhttps://github.com/lucascamillomd/pyaging" },
+    { number: 27, title: "[工具初筛] 软件选择", state: "open", labels: [{ name: "question" }], body: "### 公开 GitHub 仓库 URL\n\nhttps://github.com/gangcai/scageclock\n\nsecret health detail", user: { login: "private-user" } },
+    { number: 28, title: "[工具初筛] 输入错误", state: "closed", labels: [{ name: "question" }], body: "### 公开 GitHub 仓库 URL\n\nhttps://bad.example.org/repo" },
+    { number: 29, title: "[工具初筛] 无标签", state: "open", labels: [], body: "### 公开 GitHub 仓库 URL\n\nhttps://github.com/a/b" },
+    { number: 30, title: "[工具初筛] PR", state: "open", labels: [{ name: "question" }], pull_request: {} },
+  ];
+  const report = summarizePublicFeedback([], "2026-09-29T00:00:00Z", [], [], serviceIssues);
+  assert.deepEqual(report.service_requests, { submitted_issue_count: 2, valid_public_repo_url_count: 1, open_issue_count: 1, closed_issue_count: 1 });
+  assert.doesNotMatch(JSON.stringify(report), /private-user|secret health detail|gangcai/);
 });
 
 test("counts only both named published project assets, not users or plays", () => {
