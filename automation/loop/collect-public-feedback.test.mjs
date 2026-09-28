@@ -14,6 +14,20 @@ test("counts only labeled opportunity issues without copying personal text", () 
   assert.doesNotMatch(JSON.stringify(report), /secret health detail|private-user/);
 });
 
+test("counts only the published article's reproduction reports without copying personal text", () => {
+  const articleIssues = [
+    { number: 7, title: "[文章复现反馈] pyaging-public-data-reproduction-guide 安装失败", state: "open", labels: [{ name: "documentation" }], body: "private health details", user: { login: "private-user" } },
+    { number: 8, title: "[文章复现反馈] pyaging-public-data-reproduction-guide 版本问题", state: "closed", labels: [{ name: "documentation" }] },
+    { number: 9, title: "[文章复现反馈] pyaging-public-data-reproduction-guide 未标记", state: "open", labels: [] },
+    { number: 10, title: "[文章复现反馈] another-article", state: "open", labels: [{ name: "documentation" }] },
+    { number: 11, title: "[文章复现反馈] pyaging-public-data-reproduction-guide PR", state: "open", labels: [{ name: "documentation" }], pull_request: {} },
+  ];
+  const report = summarizePublicFeedback([], "2026-09-29T00:00:00Z", [], articleIssues);
+  assert.equal(report.schema_version, 2);
+  assert.deepEqual(report.articles, [{ article_slug: "pyaging-public-data-reproduction-guide", reported_issue_count: 2, open_issue_count: 1, closed_issue_count: 1 }]);
+  assert.doesNotMatch(JSON.stringify(report), /private health details|private-user/);
+});
+
 test("counts only both named published project assets, not users or plays", () => {
   const pyagingRelease = {
     tag_name: "pyaging-public-video-v1",
