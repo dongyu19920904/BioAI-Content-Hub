@@ -4,7 +4,7 @@ import { runDiscovery } from "./discover-open-source.mjs";
 
 const healthy = {
   full_name: "ResearchLab/AgingClock",
-  description: "Reproducible aging clock research software",
+  description: "Reproducible biological aging clock research software",
   license: { spdx_id: "MIT" },
   pushed_at: "2026-09-20T12:00:00Z",
   stargazers_count: 21,
@@ -27,6 +27,8 @@ test("searches metadata, checks README, and opens one bounded issue without exec
       items: [
         { ...healthy, full_name: "gangcai/scageclock" },
         { ...healthy, full_name: "random/TwoHandedClock", description: "Operating system page aging clock", license: null },
+        { ...healthy, full_name: "random/AgeCalendar", description: "An age calculator with a live clock and calendar" },
+        { ...healthy, full_name: "ResearchLab/OldAgingClock", pushed_at: "2023-01-01T00:00:00Z" },
         healthy,
         { ...healthy, full_name: "Unknown/Unlicensed", license: null },
       ],
@@ -43,7 +45,7 @@ test("searches metadata, checks README, and opens one bounded issue without exec
   assert.equal(result.status, "created");
   assert.equal(result.candidates, 1);
   assert.match(body, /ResearchLab\/AgingClock/);
-  assert.doesNotMatch(body, /Unlicensed|scageclock|TwoHandedClock/);
+  assert.doesNotMatch(body, /Unlicensed|scageclock|TwoHandedClock|AgeCalendar|OldAgingClock/);
   assert.match(body, /不代表有真实需求、科学效力/);
   assert.equal(calls.filter((call) => call.url.includes("/search/repositories?")).length, 4);
   assert.equal(calls.filter((call) => call.options.method === "POST").length, 1);
