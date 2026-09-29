@@ -50,6 +50,22 @@
       }
     },
     {
+      "repo": "dayoonkwon/BioAge",
+      "name": "BioAge",
+      "category": "血液指标研究",
+      "input_zh": "软件随包提供的 NHANES III 与 NHANES IV 公开血液指标数据；本站示例不接收个人资料",
+      "output_zh": "先在 NHANES III 训练，再投影到 NHANES IV 的 Phenotypic Age 研究分数；本站只公开聚合结果",
+      "start_zh": "本站已固定原仓库提交，在 GitHub CPU 上运行作者示例；项目页提供中文复跑步骤",
+      "demo_url": "/projects/bioage-public-demo",
+      "caution_zh": "部分公开样本未得到有限输出，不能把模型分数作为个人寿命预测；原软件采用 GPL-3，改造或再分发须遵守条款。",
+      "github": {
+        "url": "https://github.com/dayoonkwon/BioAge",
+        "license": "GPL-3.0",
+        "archived": false,
+        "pushed_at": "2026-04-02T21:04:41Z"
+      }
+    },
+    {
       "repo": "sunericd/SpatialAgingClock",
       "name": "Spatial Aging Clocks",
       "category": "单细胞时钟",
