@@ -1,20 +1,7 @@
 name: Chinese scAgeClock research video
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "automation/projects/scageclock_public_demo.py"
-      - "automation/projects/render_scageclock_video.py"
-      - "automation/loop/storyboard-to-hyperframes.mjs"
-      - ".github/workflows/scageclock-voiced-video.yml"
-  pull_request:
-    paths:
-      - "automation/projects/scageclock_public_demo.py"
-      - "automation/projects/render_scageclock_video.py"
-      - "automation/projects/test_render_scageclock_video.py"
-      - "automation/loop/storyboard-to-hyperframes.mjs"
-      - ".github/workflows/scageclock-voiced-video.yml"
+  # Existing video remains public, but new video production is paused.
   workflow_dispatch:
 
 permissions:
