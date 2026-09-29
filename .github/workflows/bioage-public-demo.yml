@@ -1,0 +1,42 @@
+name: Public-data BioAge project demo
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-public-example:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      BIOAGE_UPSTREAM_COMMIT: b1f9fc02f086cd4aa74185f2335ab1366082e7fe
+      OMP_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - name: Fetch reviewed upstream source
+        run: |
+          git clone --filter=blob:none https://github.com/dayoonkwon/BioAge.git upstream-bioage
+          git -C upstream-bioage checkout --detach "$BIOAGE_UPSTREAM_COMMIT"
+          test "$(git -C upstream-bioage rev-parse HEAD)" = "$BIOAGE_UPSTREAM_COMMIT"
+          test "$(grep -c '^License: GPL-3$' upstream-bioage/DESCRIPTION)" = 1
+      - name: Install research software and declared dependencies
+        run: |
+          Rscript -e 'install.packages(c("broom", "dplyr", "flexsurv", "ggplot2", "htmlTable", "survey", "survival", "tidyr", "jsonlite"))'
+          R CMD INSTALL upstream-bioage
+      - name: Run bundled public NHANES example
+        run: Rscript automation/projects/bioage_public_demo.R
+      - name: Validate aggregate-only result
+        run: python automation/projects/validate_bioage_summary.py automation/runs/bioage-public-demo/summary.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bioage-public-summary-${{ github.run_id }}
+          path: automation/runs/bioage-public-demo/summary.json
+          retention-days: 7
