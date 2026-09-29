@@ -1,8 +1,8 @@
-name: Daily evidence-first draft packs
+name: Legacy evidence-first draft packs (manual only)
 
 on:
-  schedule:
-    - cron: "17 14 * * *" # 22:17 Asia/Shanghai; delayed schedules are acceptable
+  # Website and open-source work is the current priority. Preserve this legacy
+  # workflow for an explicit manual check, but do not generate unused social drafts daily.
   workflow_dispatch:
     inputs:
       report_date:
