@@ -1,20 +1,7 @@
 name: Unpublished Chinese research video pilot
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "automation/projects/render_pyaging_video.py"
-      - "automation/projects/pyaging_public_demo.py"
-      - "automation/loop/storyboard-to-hyperframes.mjs"
-      - ".github/workflows/pyaging-voiced-video.yml"
-  pull_request:
-    paths:
-      - "automation/projects/render_pyaging_video.py"
-      - "automation/projects/test_render_pyaging_video.py"
-      - "automation/loop/storyboard-to-hyperframes.mjs"
-      - "automation/loop/storyboard-to-hyperframes.test.mjs"
-      - ".github/workflows/pyaging-voiced-video.yml"
+  # Existing video remains public, but new video production is paused.
   workflow_dispatch:
 
 permissions:
