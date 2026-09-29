@@ -52,6 +52,9 @@ jobs:
       - name: "Check automatic open-source project discovery"
         run: node --test automation/projects/discover-open-source.test.mjs
 
+      - name: "Check Biolearn public-run aggregate boundary"
+        run: python3 -m unittest discover -s automation/projects -p 'test_biolearn_public_demo.py'
+
       - name: "📝 Checking code format"
         run: pnpm run format:check
 
