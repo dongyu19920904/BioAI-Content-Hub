@@ -1,0 +1,32 @@
+name: Discover open-source longevity project candidates
+
+on:
+  schedule:
+    - cron: "37 3 * * 2" # Weekly, GitHub schedules may be delayed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: discover-open-source-projects
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Test candidate filtering and queue idempotency
+        run: node --test automation/projects/discover-open-source.test.mjs
+      - name: Search public repositories and maintain one candidate issue
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node automation/projects/discover-open-source.mjs

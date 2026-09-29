@@ -49,6 +49,9 @@ jobs:
       - name: "Check no-login browser repository preflight"
         run: node --test src/scripts/repoQuickCheck.test.mjs
 
+      - name: "Check automatic open-source project discovery"
+        run: node --test automation/projects/discover-open-source.test.mjs
+
       - name: "📝 Checking code format"
         run: pnpm run format:check
 
