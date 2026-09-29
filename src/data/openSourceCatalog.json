@@ -1,5 +1,5 @@
 {
-  "observed_at": "2026-09-27T14:37:49.693Z",
+  "observed_at": "2026-09-29T10:29:00.000Z",
   "projects": [
     {
       "repo": "lucascamillomd/pyaging",
@@ -31,6 +31,22 @@
         "license": "BSD-3-Clause",
         "archived": false,
         "pushed_at": "2026-08-14T01:56:26Z"
+      }
+    },
+    {
+      "repo": "bio-learn/biolearn",
+      "name": "Biolearn",
+      "category": "血液指标研究",
+      "input_zh": "作者加载器指定的 CDC NHANES 2009–2010 公开血液指标与随访资料；本示例无需个人数据",
+      "output_zh": "Phenotypic Age 模型分数；本站只公布聚合样本数和中位数",
+      "start_zh": "本站已固定 v0.9.1，在 GitHub CPU 运行 2,877 行公开样本，可按项目页复跑",
+      "demo_url": "/projects/biolearn-public-demo",
+      "caution_zh": "历史美国人群数据上的模型输出不是个人寿命预测或干预疗效。GitHub 未识别许可证，原始 LICENSE 是 New BSD，仍须核对依赖和模型条款。",
+      "github": {
+        "url": "https://github.com/bio-learn/biolearn",
+        "license": "NOASSERTION",
+        "archived": false,
+        "pushed_at": "2026-07-11T20:43:40Z"
       }
     },
     {

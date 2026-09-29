@@ -9,7 +9,7 @@ export interface NavProject {
 export const NAV_LINKS: NavProject[] = [
   {
     title: "AI 延寿研究开源工具导航",
-    desc: "按研究输入筛选工具，明确区分本站已试跑的 2 项与仅收录的项目。",
+    desc: "按研究输入筛选工具，明确区分本站已试跑的 3 项与仅收录的项目。",
     url: "/projects/open-source-tools/",
     tag: "选工具",
     icon: "T",
@@ -41,6 +41,13 @@ export const NAV_LINKS: NavProject[] = [
     url: "/projects/scageclock-public-demo",
     tag: "开源试跑",
     icon: "C",
+  },
+  {
+    title: "Biolearn 公开数据试跑",
+    desc: "用 CDC 公开 NHANES 数据复现 Biolearn 的 Phenotypic Age 计算，只展示聚合输出。",
+    url: "/projects/biolearn-public-demo",
+    tag: "开源试跑",
+    icon: "B",
   },
   {
     title: "全部网站文章",
