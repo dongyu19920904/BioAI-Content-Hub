@@ -24,6 +24,7 @@ jobs:
           page='https://life.aivora.cn/projects/pyaging-public-demo/'
           scageclock_page='https://life.aivora.cn/projects/scageclock-public-demo/'
           biolearn_page='https://life.aivora.cn/projects/biolearn-public-demo/'
+          bioage_page='https://life.aivora.cn/projects/bioage-public-demo/'
           guide_page='https://life.aivora.cn/posts/pyaging-public-data-reproduction-guide/'
           scageclock_guide='https://life.aivora.cn/posts/scageclock-public-sample-reproduction-guide/'
           choice_page='https://life.aivora.cn/posts/pyaging-vs-scageclock-input-choice/'
@@ -77,10 +78,17 @@ jobs:
           grep -Fq '2,877' biolearn-page.html
           grep -Fq '42.61' biolearn-page.html
           grep -Fq 'NOASSERTION' biolearn-page.html
+          curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$bioage_page" --output bioage-page.html
+          grep -Fq 'BioAge：从 NHANES III 训练' bioage-page.html
+          grep -Fq '36575775741' bioage-page.html
+          grep -Fq '37,583' bioage-page.html
+          grep -Fq '45.3902' bioage-page.html
+          grep -Fq 'GPL-3' bioage-page.html
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$tools_page" --output tools-page.html
           grep -Fq 'AI 延寿研究开源工具导航' tools-page.html
           grep -Fq 'gangcai/scageclock' tools-page.html
           grep -Fq 'bio-learn/biolearn' tools-page.html
+          grep -Fq 'dayoonkwon/BioAge' tools-page.html
           grep -Fq '/projects/scageclock-public-demo' tools-page.html
           grep -Fq '尚未试跑' tools-page.html
           grep -Fq '/services/repo-preflight/' tools-page.html
