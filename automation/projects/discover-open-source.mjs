@@ -24,15 +24,17 @@ function validSlug(value) {
   return /^[A-Za-z0-9][A-Za-z0-9-]{0,38}\/[A-Za-z0-9._-]{1,100}$/.test(value || "");
 }
 
-function candidateFromSearch(item) {
+function candidateFromSearch(item, cutoff) {
   const slug = String(item?.full_name || "");
   const license = String(item?.license?.spdx_id || "");
   const description = safeText(item?.description);
   const topic = `${slug} ${description}`;
   if (!validSlug(slug) || known.has(slug.toLowerCase()) || item.private || item.archived || item.fork) return null;
-  if (!description || !/(ag(e|ing)|biolog|senescen|epigen|longev)/i.test(topic)) return null;
+  if (!description || !/(biolog|senescen|epigen|transcriptom|proteom|methylat|single.cell|longev|biomarker)/i.test(topic)) return null;
   if (/(virtual memory|page replacement|operating system|cpu scheduling|battery aging)/i.test(topic)) return null;
   if (!/^[A-Za-z0-9.+-]{2,64}$/.test(license) || license === "NOASSERTION") return null;
+  const pushedAt = new Date(item.pushed_at || "");
+  if (Number.isNaN(pushedAt.getTime()) || pushedAt < cutoff) return null;
   return {
     slug,
     url: `https://github.com/${slug}`,
@@ -44,6 +46,8 @@ function candidateFromSearch(item) {
 }
 
 export async function runDiscovery(fetcher = fetch, token = "", now = new Date()) {
+  const cutoff = new Date(now);
+  cutoff.setUTCMonth(cutoff.getUTCMonth() - 18);
   const headers = {
     Accept: "application/vnd.github+json",
     "User-Agent": "BioAI-Content-Hub/project-discovery",
@@ -71,7 +75,7 @@ export async function runDiscovery(fetcher = fetch, token = "", now = new Date()
       if (!Array.isArray(result.items) || result.incomplete_results) throw new Error("incomplete search results");
       let added = 0;
       for (const item of result.items) {
-        const candidate = candidateFromSearch(item);
+        const candidate = candidateFromSearch(item, cutoff);
         if (!candidate || seen.has(candidate.slug.toLowerCase())) continue;
         seen.add(candidate.slug.toLowerCase());
         candidates.push(candidate);
@@ -99,7 +103,7 @@ export async function runDiscovery(fetcher = fetch, token = "", now = new Date()
   const rows = withReadme.map((item, index) =>
     `| ${index + 1} | [${item.slug}](${item.url}) | ${item.description} | ${item.license}（GitHub 识别） | ${item.pushed} | ${item.stars} |`,
   );
-  const body = `${marker}\n本清单由 GitHub 公开仓库搜索和 README 可读性检查生成，最近检查于 ${now.toISOString().slice(0, 10)}。` +
+  const body = `${marker}\n本清单由 GitHub 公开仓库搜索和 README 可读性检查生成，只展示最近 18 个月有代码推送记录的候选；最近检查于 ${now.toISOString().slice(0, 10)}。` +
     `**只是候选，不代表有真实需求、科学效力、可复现数据或商用许可。** 没有 clone、安装或执行下面的陌生代码。\n\n` +
     `| # | 仓库 | 仓库描述（原文元数据） | 许可证元数据 | 最近推送 | Star |\n| --- | --- | --- | --- | --- | ---: |\n` +
     `${rows.join("\n")}\n\n` +
