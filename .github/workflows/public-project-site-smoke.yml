@@ -25,6 +25,8 @@ jobs:
           scageclock_page='https://life.aivora.cn/projects/scageclock-public-demo/'
           biolearn_page='https://life.aivora.cn/projects/biolearn-public-demo/'
           bioage_page='https://life.aivora.cn/projects/bioage-public-demo/'
+          methylclock_page='https://life.aivora.cn/projects/methylclock-public-trial/'
+          sennet_page='https://life.aivora.cn/projects/sennet-public-id-lookup/'
           guide_page='https://life.aivora.cn/posts/pyaging-public-data-reproduction-guide/'
           scageclock_guide='https://life.aivora.cn/posts/scageclock-public-sample-reproduction-guide/'
           choice_page='https://life.aivora.cn/posts/pyaging-vs-scageclock-input-choice/'
@@ -84,12 +86,30 @@ jobs:
           grep -Fq '37,583' bioage-page.html
           grep -Fq '45.3902' bioage-page.html
           grep -Fq 'GPL-3' bioage-page.html
+          curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$methylclock_page" --output methylclock-page.html
+          grep -Fq 'methylclock：先看甲基化位点覆盖率' methylclock-page.html
+          grep -Fq '36663887284' methylclock-page.html
+          grep -Fq '25.2197' methylclock-page.html
+          grep -Fq '不要把“100% 覆盖”读成“100% 准确”' methylclock-page.html
+          curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$sennet_page" --output sennet-page.html
+          grep -Fq 'id="sennet-lookup-form"' sennet-page.html
+          grep -Fq 'search.api.sennetconsortium.org/param-search/datasets' sennet-page.html
+          grep -Fq 'SNT323.PKDN.647' sennet-page.html
+          curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 \
+            -H 'Origin: https://life.aivora.cn' \
+            --dump-header sennet-api-headers.txt \
+            'https://search.api.sennetconsortium.org/param-search/datasets?sennet_id=SNT323.PKDN.647' \
+            --output sennet-api.json
+          jq -e '[.[] | select(.sennet_id == "SNT323.PKDN.647" and .status == "Published" and .data_access_level == "public" and .dataset_type == "GeoMx (NGS)" and .doi_url == "https://doi.org/10.60586/SNT323.PKDN.647")] | length == 1' sennet-api.json > /dev/null
+          grep -Eiq '^access-control-allow-origin: (\*|https://life\.aivora\.cn)' sennet-api-headers.txt
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$tools_page" --output tools-page.html
           grep -Fq 'AI 延寿研究开源工具导航' tools-page.html
           grep -Fq 'gangcai/scageclock' tools-page.html
           grep -Fq 'bio-learn/biolearn' tools-page.html
           grep -Fq 'dayoonkwon/BioAge' tools-page.html
           grep -Fq '/projects/scageclock-public-demo' tools-page.html
+          grep -Fq 'methylclock' tools-page.html
+          grep -Fq '的公开样本做过本站试跑' tools-page.html
           grep -Fq '尚未试跑' tools-page.html
           grep -Fq '/services/repo-preflight/' tools-page.html
           curl --fail --silent --show-error --location --retry 2 --retry-delay 5 --connect-timeout 10 --max-time 25 "$stats_page" --output stats-page.html
