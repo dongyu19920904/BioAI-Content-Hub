@@ -9,7 +9,7 @@ export interface NavProject {
 export const NAV_LINKS: NavProject[] = [
   {
     title: "AI 延寿研究开源工具导航",
-    desc: "按研究输入筛选工具，明确区分本站已试跑的 3 项与仅收录的项目。",
+    desc: "按研究输入筛选工具，明确区分本站已试跑与仅收录的项目。",
     url: "/projects/open-source-tools/",
     tag: "选工具",
     icon: "T",
@@ -48,6 +48,13 @@ export const NAV_LINKS: NavProject[] = [
     url: "/projects/biolearn-public-demo",
     tag: "开源试跑",
     icon: "B",
+  },
+  {
+    title: "SenNet 公开数据集编号核查",
+    desc: "输入公开数据集编号，直接核对官方发表状态、访问级别、检测类型和 DOI。",
+    url: "/projects/sennet-public-id-lookup/",
+    tag: "免费工具",
+    icon: "S",
   },
   {
     title: "全部网站文章",

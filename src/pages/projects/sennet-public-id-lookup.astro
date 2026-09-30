@@ -1,0 +1,234 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+---
+
+<Layout
+  title="SenNet 公开数据集编号核查｜AI 延寿研究开源工具"
+  description="输入一个 SenNet 数据集编号，直接向官方公开 API 核对发表状态、访问级别、检测类型和原始 DOI；不上传健康资料。"
+>
+  <Header />
+  <main id="main-content" class="app-layout mx-auto max-w-4xl px-4 py-10">
+    <p class="text-sm font-semibold tracking-wide text-accent">
+      免费公开目录核查 · 无需账号或本服务器
+    </p>
+    <h1 class="mt-3 text-3xl font-bold sm:text-4xl">
+      查一个 SenNet 数据集，先确认它能否公开访问
+    </h1>
+    <p class="text-base-content/70 mt-5 leading-7">
+      适合拿到论文或清单里的 <code>SNT...</code> 编号、想找细胞衰老研究数据的读者。
+      输入编号后，浏览器直接查询<a
+        class="text-accent underline"
+        href="https://docs.sennetconsortium.org/param-search/"
+        target="_blank"
+        rel="noopener noreferrer">SenNet 官方公开搜索接口</a
+      >；本站不接收编号、不缓存返回资料，也不下载原始样本。
+    </p>
+
+    <form
+      id="sennet-lookup-form"
+      class="bg-base-100 mt-8 rounded-xl border border-border p-6"
+    >
+      <label for="sennet-id" class="block font-semibold">数据集编号</label>
+      <div class="mt-3 flex flex-col gap-3 sm:flex-row">
+        <input
+          id="sennet-id"
+          name="sennet-id"
+          type="text"
+          value="SNT323.PKDN.647"
+          maxlength="16"
+          spellcheck="false"
+          autocomplete="off"
+          aria-describedby="sennet-id-help"
+          class="bg-base-100 min-w-0 flex-1 rounded-lg border border-border px-4 py-3 font-mono text-base"
+        />
+        <button
+          type="submit"
+          class="rounded-lg bg-accent px-5 py-3 font-semibold text-white"
+          >核查官方记录</button
+        >
+      </div>
+      <p id="sennet-id-help" class="text-base-content/60 mt-3 text-sm">
+        已填入可复核示例。只接受形如 SNT323.PKDN.647
+        的数据集编号；不要输入个人信息。
+      </p>
+      <p id="sennet-status" class="mt-5" role="status" aria-live="polite">
+        点击按钮后查询。
+      </p>
+      <dl
+        id="sennet-result"
+        class="mt-5 hidden space-y-3 border-t border-border pt-5"
+      >
+        <div><dt class="font-semibold">编号</dt><dd data-field="id"></dd></div>
+        <div>
+          <dt class="font-semibold">检测类型</dt><dd data-field="type"></dd>
+        </div>
+        <div>
+          <dt class="font-semibold">发表状态</dt><dd data-field="status"></dd>
+        </div>
+        <div>
+          <dt class="font-semibold">访问级别</dt><dd data-field="access"></dd>
+        </div>
+        <div>
+          <dt class="font-semibold">来源器官</dt><dd data-field="organ"></dd>
+        </div>
+        <div>
+          <dt class="font-semibold">官方原始说明</dt>
+          <dd data-field="description" class="whitespace-pre-wrap"></dd>
+        </div>
+        <div>
+          <dt class="font-semibold">官方永久链接</dt>
+          <dd>
+            <a
+              id="sennet-doi"
+              class="text-accent underline"
+              target="_blank"
+              rel="noopener noreferrer">打开 DOI 页面</a
+            >
+          </dd>
+        </div>
+      </dl>
+    </form>
+
+    <section class="mt-8 leading-7">
+      <h2 class="text-xl font-semibold">怎样判断能不能拿来研究？</h2>
+      <ol class="mt-4 list-decimal space-y-3 pl-6">
+        <li>
+          先看状态是否为 <code>Published</code>，访问级别是否为 <code
+            >public</code
+          >。本页只有两项同时满足才展示详情。
+        </li>
+        <li>
+          核对检测类型、器官和原始说明是否符合研究问题；同一组织也可能来自不同物种、年龄或实验设计。
+        </li>
+        <li>
+          打开 DOI 到官方页面核对文件、引用方式、数据使用条款和实际下载权限；<strong
+            >目录公开不等于所有原始文件都可直接下载或再分发</strong
+          >。
+        </li>
+      </ol>
+      <p class="text-base-content/70 mt-4">
+        示例编号在 2026-09-30 的只读核查中返回已发表、公开的 GeoMx (NGS)
+        小鼠肝脏数据； 这是元信息查询，不是“衰老逆转”或治疗效果的证据。
+        <a
+          class="text-accent underline"
+          href="https://github.com/TheJacksonLaboratory/sennet-demo/tree/7d2e5c4a3564070a7e2aea410683095676538bd8"
+          target="_blank"
+          rel="noopener noreferrer">Jackson Laboratory 开源示例</a
+        >提供更深入的 SenNet 数据发现流程；本站只做最小编号核查，不运行它的
+        notebooks。
+      </p>
+    </section>
+    <p class="text-base-content/70 mt-8">
+      查询失败或发现字段解释有误？请附编号与错误现象<a
+        class="text-accent underline"
+        href="https://github.com/dongyu19920904/BioAI-Content-Hub/issues/new/choose"
+        target="_blank"
+        rel="noopener noreferrer">反馈问题</a
+      >，不要附原始个人健康资料。
+    </p>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#sennet-lookup-form");
+  const input = document.querySelector<HTMLInputElement>("#sennet-id");
+  const status = document.querySelector<HTMLElement>("#sennet-status");
+  const result = document.querySelector<HTMLElement>("#sennet-result");
+  const doi = document.querySelector<HTMLAnchorElement>("#sennet-doi");
+
+  if (form && input && status && result && doi) {
+    const field = (name: string, value: string) => {
+      const target = result.querySelector<HTMLElement>(
+        `[data-field="${name}"]`
+      );
+      if (target) target.textContent = value;
+    };
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      result.hidden = true;
+      result.classList.add("hidden");
+      doi.removeAttribute("href");
+      const id = input.value.trim().toUpperCase();
+      if (!/^SNT\d{3}\.[A-Z]{4}\.[0-9]{3}$/.test(id)) {
+        status.textContent =
+          "编号格式不对。请只输入一个形如 SNT323.PKDN.647 的数据集编号。";
+        return;
+      }
+
+      status.textContent = "正在向 SenNet 官方接口查询……";
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), 12000);
+      try {
+        const url = new URL(
+          "https://search.api.sennetconsortium.org/param-search/datasets"
+        );
+        url.searchParams.set("sennet_id", id);
+        const response = await fetch(url, {
+          signal: controller.signal,
+          cache: "no-store",
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const records: unknown = await response.json();
+        const record = Array.isArray(records)
+          ? records.find(
+              item => item && typeof item === "object" && item.sennet_id === id
+            )
+          : null;
+        if (!record) {
+          status.textContent =
+            "官方公开目录没有返回这个数据集编号。请核对编号，或去 SenNet 原站搜索。";
+          return;
+        }
+        if (
+          record.status !== "Published" ||
+          record.data_access_level !== "public"
+        ) {
+          status.textContent =
+            "这条记录未同时满足已发表和公开访问条件；本站不展示详情。请到官方原站核对权限。";
+          return;
+        }
+        field("id", id);
+        field("type", String(record.dataset_type ?? "未提供"));
+        field("status", "已发表（Published）");
+        field("access", "公开（public）");
+        const organ = Array.isArray(record.origin_samples)
+          ? record.origin_samples[0]?.organ_hierarchy
+          : null;
+        field(
+          "organ",
+          typeof organ === "string" ? organ : "未提供；请到官方页核对"
+        );
+        field(
+          "description",
+          typeof record.description === "string" ? record.description : "未提供"
+        );
+        if (typeof record.doi_url === "string") {
+          try {
+            const doiUrl = new URL(record.doi_url);
+            if (doiUrl.protocol === "https:" && doiUrl.hostname === "doi.org") {
+              doi.href = doiUrl.href;
+            }
+          } catch {
+            // Keep the verified metadata visible even if its DOI is malformed.
+          }
+        }
+        doi.textContent = doi.hasAttribute("href")
+          ? "打开 DOI 页面"
+          : "未提供安全的 DOI 链接";
+        status.textContent =
+          "已从官方公开目录读到记录；请继续到原始页面核对文件和条款。";
+        result.hidden = false;
+        result.classList.remove("hidden");
+      } catch {
+        status.textContent =
+          "暂时无法连接 SenNet 官方接口；请稍后重试或直接访问官方数据门户。";
+      } finally {
+        window.clearTimeout(timer);
+      }
+    });
+  }
+</script>
