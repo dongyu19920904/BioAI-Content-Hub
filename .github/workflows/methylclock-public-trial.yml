@@ -1,0 +1,47 @@
+name: Public-data methylclock coverage trial
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-public-example:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      METHYLCLOCK_UPSTREAM_COMMIT: 30be0284066fda7d2f81ec4bf427da56f0f89d1b
+      OMP_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          r-version: "4.6.0"
+          use-public-rspm: true
+      - name: Check the aggregate-only result contract
+        run: python -m unittest discover -s automation/projects -p 'test_validate_methylclock_summary.py'
+      - name: Fetch reviewed upstream source at exact revision
+        run: |
+          git clone --filter=blob:none https://github.com/isglobal-brge/methylclock.git upstream-methylclock
+          git -C upstream-methylclock checkout --detach "$METHYLCLOCK_UPSTREAM_COMMIT"
+          test "$(git -C upstream-methylclock rev-parse HEAD)" = "$METHYLCLOCK_UPSTREAM_COMMIT"
+          grep -Fxq 'Version: 1.99.2' upstream-methylclock/DESCRIPTION
+          grep -Fxq 'License: MIT + file LICENSE' upstream-methylclock/DESCRIPTION
+          test -s upstream-methylclock/data/methylclock_betas.rda
+      - name: Install reviewed package and hard dependencies
+        run: |
+          Rscript -e 'install.packages(c("pak", "BiocManager")); BiocManager::install(version = "3.23", ask = FALSE, update = FALSE)'
+          Rscript -e 'pak::pkg_install(c("bioc::methylclockData", "methylclock=local::./upstream-methylclock", "jsonlite"), dependencies = c("Depends", "Imports", "LinkingTo"))'
+      - name: Check three clock CpG sets and calculate one research output
+        run: Rscript automation/projects/methylclock_public_trial.R
+      - name: Validate aggregate-only artifact
+        run: python automation/projects/validate_methylclock_summary.py automation/runs/methylclock-public-trial/summary.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: methylclock-public-summary-${{ github.run_id }}
+          path: automation/runs/methylclock-public-trial/summary.json
+          retention-days: 7
