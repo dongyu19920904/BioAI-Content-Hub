@@ -1,0 +1,160 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+---
+
+<Layout
+  title="methylclock 公开甲基化小样本复现｜AI 延寿研究开源项目"
+  description="固定 methylclock 开发版提交，用维护者公开 919×16 beta 矩阵核对三个时钟的 CpG 覆盖率并试算 Horvath；附真实运行记录与中文步骤。"
+>
+  <Header />
+  <main id="main-content" class="app-layout mx-auto max-w-4xl px-4 py-10">
+    <p class="text-sm font-semibold tracking-wide text-accent">
+      固定上游版本 · GitHub 临时运行器真实试跑 · 无个人资料上传
+    </p>
+    <h1 class="mt-3 text-3xl font-bold sm:text-4xl">
+      methylclock：先看甲基化位点覆盖率，再谈时钟计算
+    </h1>
+    <p class="text-base-content/70 mt-5 leading-7">
+      DNA 甲基化 beta
+      矩阵可以用于研究性年龄时钟计算，但不是把任意一张表扔进去就有可信结果。
+      本页给已有研究数据、正在挑工具的读者一个可复核的小实验：固定
+      <a
+        class="text-accent underline"
+        href="https://github.com/isglobal-brge/methylclock/tree/30be0284066fda7d2f81ec4bf427da56f0f89d1b"
+        target="_blank"
+        rel="noopener noreferrer">作者仓库开发版 1.99.2</a
+      >，先核对三个时钟所需 CpG 是否存在，只为其中一个时钟计算聚合结果。
+      本站不提供个人年龄检测，也不收用户的甲基化数据。
+    </p>
+
+    <section class="bg-base-100 mt-8 rounded-xl border border-border p-6">
+      <h2 class="text-xl font-semibold">这次跑出来的结果</h2>
+      <p class="text-base-content/70 mt-3 leading-7">
+        <a
+          class="text-accent underline"
+          href="https://github.com/dongyu19920904/BioAI-Content-Hub/actions/runs/36663887284"
+          target="_blank"
+          rel="noopener noreferrer">2026-09-30 的真实运行</a
+        >成功。输入是作者随包提供的 <strong>919 个 CpG × 16 个样本</strong>
+        的 beta 矩阵，不是合成随机表，也不是网站访客的健康资料。初次安装依赖约花
+        <strong>20 分钟</strong>；真正的覆盖核对和计算约 15 秒。
+      </p>
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full border-collapse text-left text-sm">
+          <caption class="pb-2 text-left font-semibold"
+            >这批样本中的位点覆盖</caption
+          >
+          <thead>
+            <tr class="border-b border-border">
+              <th scope="col" class="px-3 py-2">时钟</th>
+              <th scope="col" class="px-3 py-2">需用 CpG</th>
+              <th scope="col" class="px-3 py-2">找到 CpG</th>
+              <th scope="col" class="px-3 py-2">覆盖</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-border"
+              ><th scope="row" class="px-3 py-2">Horvath</th><td
+                class="px-3 py-2">353</td
+              ><td class="px-3 py-2">353</td><td class="px-3 py-2">100%</td></tr
+            >
+            <tr class="border-b border-border"
+              ><th scope="row" class="px-3 py-2">Levine</th><td
+                class="px-3 py-2">513</td
+              ><td class="px-3 py-2">513</td><td class="px-3 py-2">100%</td></tr
+            >
+            <tr
+              ><th scope="row" class="px-3 py-2">Wu</th><td class="px-3 py-2"
+                >111</td
+              ><td class="px-3 py-2">111</td><td class="px-3 py-2">100%</td></tr
+            >
+          </tbody>
+        </table>
+      </div>
+      <p class="text-base-content/70 mt-4 leading-7">
+        仅 Horvath 时钟做了进一步试算：16 个样本均得到有限数值，模型输出中位数
+        <strong>25.2197</strong
+        >。这是模型数字，不是已知真实年龄的误差或临床“生物年龄”。
+        本次样本没有逐人的真实年龄和结局，<strong
+          >不能推导准确率、延寿疗效或个人建议</strong
+        >。
+      </p>
+      <p class="text-base-content/70 mt-4 leading-7">
+        运行页底部的 <code>methylclock-public-summary</code> 工件仅保存聚合 JSON 7
+        天； 不公开 16 人逐样本预测、beta 矩阵或时钟系数。工件过期后仍可查看运行日志并在自己的副本重新执行。
+      </p>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="text-xl font-semibold">新手怎样自己复跑</h2>
+      <ol class="mt-4 list-decimal space-y-3 pl-6 leading-7">
+        <li>
+          登录 GitHub，打开<a
+            class="text-accent underline"
+            href="https://github.com/dongyu19920904/BioAI-Content-Hub"
+            target="_blank"
+            rel="noopener noreferrer">本站开源仓库</a
+          >，点击右上角 <strong>Fork</strong> 创建副本。普通访客不能在本站原仓库运行任务。
+        </li>
+        <li>
+          在你自己的副本的 <strong>Actions</strong> 中启用工作流，找到
+          <strong>Public-data methylclock coverage trial</strong>，点击 <strong
+            >Run workflow</strong
+          >。 它只在手动触发时运行，不要求输入资料、密钥或付款。
+        </li>
+        <li>
+          第一次安装 R/Bioconductor 和 C++
+          依赖会较慢。等待任务绿色勾后，打开运行页底部
+          <code>methylclock-public-summary</code>，核对固定上游提交
+          <code>30be0284066fda7d2f81ec4bf427da56f0f89d1b</code>、
+          <code>coverage</code> 三行和 <code>horvath_finite_outputs</code> 是否为
+          16。 如果失败，先区分安装、下载系数、覆盖率与结果校验四个步骤；不要把红叉当成生物学结论。
+        </li>
+      </ol>
+      <p class="text-base-content/70 mt-4 leading-7">
+        <a
+          class="text-accent underline"
+          href="https://github.com/dongyu19920904/BioAI-Content-Hub/blob/main/.github/workflows/methylclock-public-trial.yml"
+          target="_blank"
+          rel="noopener noreferrer">工作流源码</a
+        >固定版本、限制只读权限与 40 分钟上限；
+        <a
+          class="text-accent underline"
+          href="https://github.com/dongyu19920904/BioAI-Content-Hub/blob/main/automation/projects/methylclock_public_trial.R"
+          target="_blank"
+          rel="noopener noreferrer">R 脚本</a
+        >断言样本形状和覆盖率，只写聚合结果。
+        若换自己的研究矩阵，须在自己的受控环境中确认样本来源、探针编号、组织适用范围与权限；
+        本站的固定公开样本工作流不接收上传。
+      </p>
+    </section>
+
+    <aside
+      class="mt-10 rounded-xl border border-amber-400 bg-amber-50 p-5 text-sm leading-7 text-amber-950 dark:bg-amber-950 dark:text-amber-100"
+    >
+      <strong>不要把“100% 覆盖”读成“100% 准确”。</strong>
+      三个时钟适用组织和人群并不相同，完整 CpG 只说明这个示例输入有相应位点。 作者仓库的<a
+        href="https://github.com/isglobal-brge/methylclock/blob/30be0284066fda7d2f81ec4bf427da56f0f89d1b/LICENSE"
+        target="_blank"
+        rel="noopener noreferrer">软件许可是 MIT</a
+      >，但<a
+        href="https://github.com/isglobal-brge/methylclock/blob/30be0284066fda7d2f81ec4bf427da56f0f89d1b/README.md"
+        target="_blank"
+        rel="noopener noreferrer">各时钟系数保留原许可</a
+      >；本站没有核准系数的商业或再分发权，也没有镜像它们。 开发版 1.99.2 与
+      Bioconductor 正式版 1.18.0 不应混称。
+      本页是科研软件复现，不是医疗建议、寿命预测或任何干预有效性验证。
+    </aside>
+    <p class="text-base-content/70 mt-8">
+      跑不通？附公开运行链接<a
+        class="text-accent underline"
+        href="https://github.com/dongyu19920904/BioAI-Content-Hub/issues/new/choose"
+        target="_blank"
+        rel="noopener noreferrer">反馈问题</a
+      >，不要贴个人健康资料、API Key 或系数文件。
+    </p>
+  </main>
+  <Footer />
+</Layout>
