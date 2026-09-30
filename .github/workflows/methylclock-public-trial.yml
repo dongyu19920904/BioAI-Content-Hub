@@ -9,9 +9,10 @@ permissions:
 jobs:
   run-public-example:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 40
     env:
       METHYLCLOCK_UPSTREAM_COMMIT: 30be0284066fda7d2f81ec4bf427da56f0f89d1b
+      MAKEFLAGS: "-j4"
       OMP_NUM_THREADS: "2"
       OPENBLAS_NUM_THREADS: "2"
     steps:
