@@ -50,6 +50,20 @@ export const NAV_LINKS: NavProject[] = [
     icon: "B",
   },
   {
+    title: "BioAge 公开 NHANES 试跑",
+    desc: "用 NHANES III 拟合，再投影到 NHANES IV；只公布聚合结果。",
+    url: "/projects/bioage-public-demo/",
+    tag: "开源试跑",
+    icon: "A",
+  },
+  {
+    title: "methylclock 甲基化位点覆盖试跑",
+    desc: "用作者公开 919×16 beta 矩阵验证三个时钟的 CpG 覆盖并试算一个研究指标。",
+    url: "/projects/methylclock-public-trial/",
+    tag: "开源试跑",
+    icon: "M",
+  },
+  {
     title: "SenNet 公开数据集编号核查",
     desc: "输入公开数据集编号，直接核对官方发表状态、访问级别、检测类型和 DOI。",
     url: "/projects/sennet-public-id-lookup/",
