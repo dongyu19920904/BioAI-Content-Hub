@@ -1,0 +1,372 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+---
+
+<Layout
+  title="4340行AI抗衰候选公开预测表｜中文搜索与原始数据"
+  description="免登录搜索和排序2023年研究公开的4340行预测分数，核对P>0.44的21个实验候选；提供原始CSV、许可与论文，不提供用药建议。"
+>
+  <Header />
+  <main id="main-content" class="app-layout mx-auto max-w-5xl px-4 py-10">
+    <h1 class="text-3xl font-bold sm:text-4xl">
+      把视频里的公开预测表，自己查一遍
+    </h1>
+    <p class="text-base-content/70 mt-5 leading-7">
+      这是 Smer-Barreto 等人 2023 年研究已经计算好的 4340 行预测分数。
+      本页只增加中文搜索、排序与筛选，<strong>没有重新训练或运行AI模型</strong
+      >。 适合想核对视频数字、阅读论文和学习数据处理的读者。
+    </p>
+    <aside class="mt-6 border-l-4 border-accent bg-accent/5 p-4 leading-7">
+      <strong>分数不是人体有效率，也不是用药清单。</strong>
+      本研究按 P&gt;0.44 选择 21 个化合物做实验，3 个在培养细胞中表现出所研究的活性；
+      不能据此推断人体延寿、安全性或剂量。不要据此自行购买或试用化合物。
+    </aside>
+
+    <section
+      aria-labelledby="explorer-heading"
+      class="mt-8 border-y border-border py-6"
+    >
+      <h2 id="explorer-heading" class="text-xl font-semibold">
+        先搜一个名称，或比较分数顺序
+      </h2>
+      <div class="mt-5 grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto]">
+        <div>
+          <label for="score-query" class="block font-semibold">公开名称</label>
+          <input
+            id="score-query"
+            type="search"
+            maxlength="120"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="例如 Ginkgetin"
+            disabled
+            class="bg-base-100 mt-2 w-full rounded-lg border border-border px-4 py-3"
+          />
+        </div>
+        <div>
+          <label for="score-order" class="block font-semibold">排序方式</label>
+          <select
+            id="score-order"
+            disabled
+            class="bg-base-100 mt-2 w-full rounded-lg border border-border px-4 py-3"
+          >
+            <option value="desc">分数从高到低</option>
+            <option value="asc">分数从低到高</option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-4 flex flex-wrap items-center gap-3">
+        <button
+          id="score-example"
+          type="button"
+          disabled
+          class="rounded-lg border border-border px-3 py-2">查视频示例</button
+        >
+        <button
+          id="score-reset"
+          type="button"
+          disabled
+          class="rounded-lg border border-border px-3 py-2">清空并重置</button
+        >
+        <label class="flex items-center gap-2 text-sm">
+          <input id="score-selected" type="checkbox" disabled />
+          只看研究阈值 P&gt;0.44
+        </label>
+      </div>
+      <p
+        id="score-status"
+        class="mt-5 text-sm"
+        role="status"
+        aria-live="polite"
+      >
+        正在读取并核对原始CSV…
+      </p>
+      <noscript
+        ><p class="mt-4">
+          浏览器未启用JavaScript。请用下方链接下载原始CSV，在表格软件里查看。
+        </p></noscript
+      >
+      <div
+        class="mt-4 overflow-x-auto"
+        tabindex="0"
+        role="region"
+        aria-label="公开分数表，可横向滚动"
+      >
+        <table class="w-full border-collapse text-left text-sm">
+          <caption class="sr-only"
+            >作者公开计算结果，不是本网站的预测或医学建议</caption
+          >
+          <thead
+            ><tr class="border-b border-border">
+              <th scope="col" class="p-3">原CSV行</th>
+              <th scope="col" class="p-3">公开名称</th>
+              <th scope="col" class="p-3">分数 probability</th>
+            </tr></thead
+          >
+          <tbody id="score-rows"></tbody>
+        </table>
+      </div>
+      <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <button
+          id="score-prev"
+          type="button"
+          disabled
+          class="rounded-lg border border-border px-3 py-2">上一页</button
+        >
+        <span id="score-page" class="text-sm">尚未加载</span>
+        <button
+          id="score-next"
+          type="button"
+          disabled
+          class="rounded-lg border border-border px-3 py-2">下一页</button
+        >
+      </div>
+      <p class="text-base-content/60 mt-4 text-sm leading-6">
+        搜索与筛选只在本页运行，不提交搜索文字、不接收健康资料。站点保留既有页面访问统计，
+        不把本次自测计作真实用户需求。原CSV行是数据行号，不含表头；显示分数保留原数值，不转成百分比疗效。
+      </p>
+    </section>
+
+    <section class="mt-8 leading-7" aria-labelledby="download-heading">
+      <h2 id="download-heading" class="text-xl font-semibold">
+        拿走原数据，继续核对
+      </h2>
+      <ul class="mt-4 list-disc space-y-3 pl-5">
+        <li>
+          <a
+            class="text-accent underline"
+            href="/data/senolytics-2023/xgboost_prediction_scores.csv"
+            download>下载未经修改的原始CSV（约197KB）</a
+          >：用 Excel、LibreOffice 或代码打开，按 probability 降序排列。
+        </li>
+        <li>
+          <a
+            class="text-accent underline"
+            href="/data/senolytics-2023/offline-viewer-corrected-20261106.zip"
+            download>下载中文离线查看包（约197KB）</a
+          >：解压后双击HTML，不需要安装Python或填写Key。
+        </li>
+        <li>
+          <a
+            class="text-accent underline"
+            href="https://www.nature.com/articles/s41467-023-39120-1"
+            target="_blank"
+            rel="noopener noreferrer">读原论文</a
+          >：从 Fig.2d、Fig.3c 与 Methods
+          核对筛选阈值和实验设计；本页没有逐项标注21个候选的实验结果。
+        </li>
+      </ul>
+      <p class="mt-4">
+        配套视频：<a
+          class="text-accent underline"
+          href="https://www.bilibili.com/video/BV1Rc4e69EUE"
+          target="_blank"
+          rel="noopener noreferrer">为什么还得看另一组细胞？</a
+        >
+        · <a
+          class="text-accent underline"
+          href="https://www.bilibili.com/video/BV1Pw4Y6NEew"
+          target="_blank"
+          rel="noopener noreferrer">打开4340行打分表</a
+        >。 表打不开或有解释错误？<a
+          class="text-accent underline"
+          href="https://github.com/dongyu19920904/BioAI-Content-Hub/issues/new/choose"
+          target="_blank"
+          rel="noopener noreferrer">反馈具体步骤</a
+        >，不要上传体检单或其他个人健康资料。
+      </p>
+    </section>
+    <section
+      class="mt-8 border-t border-border pt-6 text-sm leading-6"
+      aria-labelledby="source-heading"
+    >
+      <h2 id="source-heading" class="text-lg font-semibold">
+        来源、许可与可复核指纹
+      </h2>
+      <p class="mt-3">
+        数据：Smer-Barreto, Vanessa; Quintanilla, Andrea; Elliot, Richard J. R.;
+        Dawson, John C.; Sun, Jiugeng; Lorente-Macías, Álvaro; Unciti-Broceta,
+        Asier; Carragher, Neil O.; Acosta, Juan Carlos; Oyarzún, Diego A.
+        (2023).
+        <a
+          class="text-accent underline"
+          href="https://zenodo.org/records/7870357"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Code and data for “Discovery of senolytics using machine learning”,
+          v1</a
+        >，DOI 10.5281/zenodo.7870357，
+        <a
+          class="text-accent underline"
+          href="https://creativecommons.org/licenses/by/4.0/"
+          target="_blank"
+          rel="noopener noreferrer">CC BY 4.0</a
+        >。
+        修改范围：增加中文展示、搜索、排序与阈值筛选；原CSV字节未改。许可与来源于2026-11-06核对。
+      </p>
+      <p class="mt-3 font-mono break-all">
+        SHA256：8b70fa4a3f0047bf63346ee32a64faf812b74b6daf4b458add728af36b53e86d
+      </p>
+      <p class="mt-3">
+        <a
+          class="text-accent underline"
+          href="https://github.com/dongyu19920904/BioAI-Content-Hub/blob/main/src/pages/projects/senolytics-prediction-table.astro"
+          target="_blank"
+          rel="noopener noreferrer">本页开源代码</a
+        > · <a
+          class="text-accent underline"
+          href="/data/senolytics-2023/README.txt">数据说明</a
+        > · <a class="text-accent underline" href="/projects/">返回工具入口</a>
+      </p>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import {
+    parseScores,
+    selectScores,
+    SCORE_SHA256,
+  } from "@/scripts/senolyticsExplorer.mjs";
+
+  function mountExplorer() {
+    const status = document.querySelector<HTMLElement>("#score-status");
+    const query = document.querySelector<HTMLInputElement>("#score-query");
+    const order = document.querySelector<HTMLSelectElement>("#score-order");
+    const selected =
+      document.querySelector<HTMLInputElement>("#score-selected");
+    const body = document.querySelector<HTMLTableSectionElement>("#score-rows");
+    const label = document.querySelector<HTMLElement>("#score-page");
+    const previous = document.querySelector<HTMLButtonElement>("#score-prev");
+    const next = document.querySelector<HTMLButtonElement>("#score-next");
+    const example = document.querySelector<HTMLButtonElement>("#score-example");
+    const reset = document.querySelector<HTMLButtonElement>("#score-reset");
+    if (
+      !status ||
+      !query ||
+      !order ||
+      !selected ||
+      !body ||
+      !label ||
+      !previous ||
+      !next ||
+      !example ||
+      !reset ||
+      status.dataset.mounted
+    )
+      return;
+    status.dataset.mounted = "true";
+    let rows: ReturnType<typeof parseScores> = [],
+      page = 0;
+    function render() {
+      const result = selectScores(rows, {
+        query: query!.value,
+        ascending: order!.value === "asc",
+        selectedOnly: selected!.checked,
+        page,
+      });
+      page = result.page;
+      body!.replaceChildren();
+      for (const row of result.items) {
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-border";
+        for (const value of [row.row, row.name, row.score]) {
+          const td = document.createElement("td");
+          td.className = "p-3 break-words";
+          td.textContent = String(value);
+          tr.append(td);
+        }
+        body!.append(tr);
+      }
+      status!.textContent = result.total
+        ? `共 ${result.total} 行 · 原始表 4340 行${selected!.checked ? " · 研究阈值筛选，不代表人体有效" : ""}`
+        : "没有匹配名称，试试清空搜索。";
+      label!.textContent = `${page + 1} / ${result.pages} 页`;
+      previous!.disabled = page === 0;
+      next!.disabled = page >= result.pages - 1;
+    }
+    const restart = () => {
+      page = 0;
+      render();
+    };
+    query.oninput = restart;
+    order.onchange = restart;
+    selected.onchange = restart;
+    previous.onclick = () => {
+      page--;
+      render();
+    };
+    next.onclick = () => {
+      page++;
+      render();
+    };
+    example.onclick = () => {
+      query.value = "Ginkgetin";
+      restart();
+    };
+    reset.onclick = () => {
+      query.value = "";
+      order.value = "desc";
+      selected.checked = false;
+      restart();
+    };
+    void (async () => {
+      try {
+        const response = await fetch(
+          "/data/senolytics-2023/xgboost_prediction_scores.csv",
+          { credentials: "omit" }
+        );
+        if (!response.ok) throw new Error("CSV请求失败");
+        const bytes = await response.arrayBuffer();
+        const digest = await crypto.subtle.digest("SHA-256", bytes);
+        const hash = [...new Uint8Array(digest)]
+          .map(byte => byte.toString(16).padStart(2, "0"))
+          .join("");
+        if (hash !== SCORE_SHA256) throw new Error("CSV指纹不符");
+        rows = parseScores(
+          new TextDecoder("utf-8", { fatal: true }).decode(bytes)
+        );
+        if (
+          rows.length !== 4340 ||
+          selectScores(rows, { selectedOnly: true }).total !== 21
+        )
+          throw new Error("CSV行数异常");
+        for (const control of [query, order, selected, example, reset])
+          control.disabled = false;
+        render();
+      } catch {
+        status.textContent =
+          "公开表未能通过加载或指纹核对，筛选保持关闭。请下载原始CSV或离线包，也可反馈错误。";
+      }
+    })();
+  }
+  mountExplorer();
+  document.addEventListener("astro:page-load", mountExplorer);
+</script>
+
+<style>
+  button,
+  select {
+    white-space: nowrap;
+  }
+  button:disabled,
+  input:disabled,
+  select:disabled {
+    opacity: 0.55;
+  }
+  button:not(:disabled):hover {
+    border-color: var(--accent);
+  }
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  td:nth-child(2) {
+    overflow-wrap: anywhere;
+  }
+</style>

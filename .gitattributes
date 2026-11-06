@@ -1,0 +1,2 @@
+# Preserve the licensed source file byte-for-byte on Windows and CI.
+public/data/senolytics-2023/xgboost_prediction_scores.csv -text

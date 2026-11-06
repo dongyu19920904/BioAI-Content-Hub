@@ -8,6 +8,13 @@ export interface NavProject {
 
 export const NAV_LINKS: NavProject[] = [
   {
+    title: "视频配套：4340行AI候选公开表",
+    desc: "免登录搜索、排序和核对研究阈值，下载原始CSV与中文离线包；不是用药建议。",
+    url: "/projects/senolytics-prediction-table/",
+    tag: "免费数据工具",
+    icon: "D",
+  },
+  {
     title: "AI 延寿研究开源工具导航",
     desc: "按研究输入筛选工具，明确区分本站已试跑与仅收录的项目。",
     url: "/projects/open-source-tools/",
